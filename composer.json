@@ -1,0 +1,15 @@
+{
+  "name": "td10",
+  "type" : "project",
+  "require": {
+    "illuminate/database": "5.0.*",
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "giftbox": "src",
+      "conf" : "."
+    }
+  }
+
+}
