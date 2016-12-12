@@ -8,5 +8,6 @@ $baseDir = dirname($vendorDir);
 return array(
     'giftbox' => array($baseDir . '/src'),
     'conf' => array($baseDir . '/'),
+    'Slim' => array($vendorDir . '/slim/slim'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
 );
