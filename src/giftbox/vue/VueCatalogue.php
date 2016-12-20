@@ -1,109 +1,72 @@
 <?php
 
-
 namespace giftbox\vue;
-use giftbox\vue as vue;
-
 
 class VueCatalogue
 {
-    $tabPrestation;
-    $tabCategorie;
 
-    function __construct($tabPrestation, $tabCategorie)
+    //pbc pour Provided By Controller => Fournit par le controlleur
+    private $pbc;
+    private $selecteur;
+
+    function __construct($fromController, $sel)
     {
-        $this->$tabPrestation = prestation;
-        $this->$tabCategorie = categorie;
 
+        $this->pbc = $fromController;
+        $this->selecteur = $sel;
     }
 
+    private function htmlAllPrestation(){
 
-    private function genererAffichage($tabPrestation){
-        $afficher = '<section>'.'<br>';
-        foreach ($this->$tabPrestation as $i){
-            $afficher  = $afficher . '<p>'.$i.'</p>';
+        $html = "<ul>";
+
+        foreach ($this->pbc as $prestation){
+
+            $html = $html . "<li>$prestation->nom : $prestation->prix, " .  $prestation->categorie->nom;
+            $html = $html . "<img src=\"/assets/img/$prestation->img\" border=\"0\" /> </li>";
         }
-            $afficher = '</section>';
-            return $afficher;
 
+        $html = $html . "</ul>";
+
+        return $html;
     }
 
+    private function htmlPrestationById(){
 
-    private function render()
+        $html = "<div>";
+        $html = $html . "<p>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ".</p>";
+        $html = $html . "<img src=\"/assets/img/" . $this->pbc->img . "\" border=\"0\" />";
+        $html = $html . "</div>";
+
+        return $html;
+    }
+
+    public function render()
     {
 
         switch($this->selecteur) {
-
-            case list_View :
-                $content = $this->genererAffichage(prestation);
+            case "ALL_PRESTATION" :
+                $content = $this->htmlAllPrestation();
                 break;
-            case Presta_View :
-                $content = $this->genererAffichage(prestation);
+            case "PRESTATION_BY_ID" :
+                $content = $this->htmlPrestationById();
                 break;
-
         }
 
-
-            $html = <<<END
-             <!DOCTYPE html>
-              <html>
-              <head> … </head>
-              <body>
-                   …
-               <div class="content">
-                  $content
-              </div>
-              </body><html>
- 
- 
+        $html = <<<END
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>TITRE</title>
+            </head>
+            <body>
+                <div class="content">
+                    $content
+                </div>
+            </body>
+        <html>
 END;
 
         return $html;
-
-
-}
-
-
-    private function genere_prestParticuliere()
-    {
-        $liste = \giftbox\models\Prestation::get();
-        $v = new PrestaView($liste, List_View);
-        $v->render();
-
-
     }
-
-
-
-
-    public function choisirAffichage(){
-
-        $html  = <<<END
-                
-
-
-
-END;
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

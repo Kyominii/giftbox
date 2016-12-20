@@ -1,43 +1,29 @@
 <?php
+
 require_once ("vendor/autoload.php");
-
-
-
-use Illuminate\Database\Capsule\Manager as DB;
-use giftbox\models as models;
 use giftbox\controleur as controleur;
-use giftbox\vue as vue;
 
-
+//Création de l'objet du micro-framework
 $app = new \Slim\Slim;
 
-//$controle = new controleur\controleur1();
-//$controle-> afficherPrestation();
-
-
-
+//Cas où nous sommes à la racine du site
 $app->get('/', function(){
 
     echo "bonjour ça va bien ?";
 });
 
-
-$app->get('/Prestation', function(){
-
-
-    if(isset($_GET['id'])){
-        $controle = new controleur\controleur1();
-        $controle -> affPrestId($_GET['id']);
-    }else{
-        $controle = new controleur\controleur1();
-        $controle -> afficherPrestation();
-    }
+//Cas où on veut afficher tout le catalogue
+$app->get('/catalogue', function(){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    echo $controlCatalogue->getAllPrestations();
 });
 
+//Cas où on veut afficher seulement une prestation
+$app->get('/catalogue/:id', function($id){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    echo $controlCatalogue->getPrestationById($id);
+});
 
-
-
-
-
+//Lancement du micro-framework
 $app->run();
 
