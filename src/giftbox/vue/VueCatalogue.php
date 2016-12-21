@@ -18,15 +18,32 @@ class VueCatalogue
 
     private function htmlAllPrestation(){
 
-        $html = "<ul>";
+        $html = "<div class=\"ui link cards\">";
 
         foreach ($this->pbc as $prestation){
 
-            $html = $html . "<li>$prestation->nom : $prestation->prix, " .  $prestation->categorie->nom;
-            $html = $html . "<img src=\"/assets/img/$prestation->img\" border=\"0\" /> </li>";
+            $html = $html . "<div class=\"card\">
+                                <div class=\"image\">
+                                    <a class=\"image\" href=\"/catalogue/$prestation->id\"><img class=\"ui medium image\" src=\"/assets/img/$prestation->img\" /></a>
+                                </div>
+                                <div class=\"content\">
+                                    <div class=\"header\">$prestation->nom</div>
+                                    <div class=\"meta\">
+                                        <a>" . $prestation->categorie->nom . "</a>
+                                    </div>
+                                    <div class=\"description\">
+                                        $prestation->descr
+                                    </div>
+                                    <div class=\"extra content\">
+                                        <span>
+                                            $prestation->prix €
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>";
         }
 
-        $html = $html . "</ul>";
+        $html = $html . "</div>";
 
         return $html;
     }
@@ -53,19 +70,8 @@ class VueCatalogue
                 break;
         }
 
-        $html = <<<END
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <title>TITRE</title>
-            </head>
-            <body>
-                <div class="content">
-                    $content
-                </div>
-            </body>
-        <html>
-END;
+        $html = Header::getHeader("Catalogue | Giftbox") . $content . Footer::getFooter();
+
 
         return $html;
     }
