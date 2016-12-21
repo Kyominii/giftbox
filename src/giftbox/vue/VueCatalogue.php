@@ -31,9 +31,6 @@ class VueCatalogue
                                     <div class=\"meta\">
                                         <a>" . $prestation->categorie->nom . "</a>
                                     </div>
-                                    <div class=\"description\">
-                                        $prestation->descr
-                                    </div>
                                     <div class=\"extra content\">
                                         <span>
                                             $prestation->prix €
@@ -51,7 +48,7 @@ class VueCatalogue
     private function htmlPrestationById(){
 
         $html = "<div>";
-        $html = $html . "<p>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ".</p>";
+        $html = $html . "<p>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ", " . $this->pbc->descr . ".</p>";
         $html = $html . "<img src=\"/assets/img/" . $this->pbc->img . "\" border=\"0\" />";
         $html = $html . "</div>";
 

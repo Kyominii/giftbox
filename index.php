@@ -8,8 +8,8 @@ $app = new \Slim\Slim;
 
 //Cas où nous sommes à la racine du site
 $app->get('/', function(){
-
-    echo "bonjour ça va bien ?";
+    $vueAccueil = new \giftbox\vue\VueAccueil();
+    echo $vueAccueil->render();
 });
 
 //Cas où on veut afficher tout le catalogue
