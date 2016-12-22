@@ -55,6 +55,10 @@ class VueCatalogue
                                         <span>
                                             $prestation->prix €
                                         </span>
+                                        <br>
+                                        <span>
+                                            ".\giftbox\models\Prestation::moyenne($prestation->notation)."
+                                        </span>
                                     </div>
                                 </div>
                             </div>";
