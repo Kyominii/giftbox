@@ -5,6 +5,16 @@ namespace giftbox\vue;
 class Header
 {
     public static function getHeader($title){
+
+        $menu = "";
+        if(strpos($title, "Catalogue") !== false){
+            $menu = "<a class=\"item\" href=\"/\">Accueil</a>
+                     <a class=\"item active\" href=\"/catalogue\">Catalogue</a>";
+        } else {
+            $menu = "<a class=\"item\" href=\"/\">Accueil</a>
+                     <a class=\"item\" href=\"/catalogue\">Catalogue</a>";
+        }
+
         $html = <<<END
         <!DOCTYPE html>
         <html>
@@ -14,18 +24,19 @@ class Header
             </head>
             <body>
                 
-                <div class="ui fixed inverted menu">
+                <div class="ui inverted vertical center aligned segment">
                     <div class="ui container">
-                      <a href="/" class="header item">
-                        <img class="logo" src="/assets/img/connaissance.jpg">
-                        <span style="padding-left: 10px">Giftbox</span>
-                      </a>
-                      <a href="/" class="item">Accueil</a>
-                      <a href="/catalogue" class="item">Catalogue</a>
+                      <div class="ui large secondary inverted pointing menu">
+                        $menu
+                        <div class="right item">
+                          <a class="ui inverted button" style="margin-right: 7px">Connexion</a>
+                          <a class="ui inverted button">Inscription</a>
+                        </div>
+                      </div>
                     </div>
                 </div>
   
-                <div class="ui container" style="width: 80%; padding-top: 100px">
+                <div class="ui container" style="width: 80%; padding-top: 30px">
 
 
 END;

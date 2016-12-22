@@ -9,9 +9,10 @@ use giftbox\vue as vue;
 class ControleurCatalogue {
 	
     private $db;
+    private $sortMode;
 
     //Constructeur du controleur du catalogue
-    function __construct(){
+    function __construct($sort = 0){
         $db = new DB();
 
         //Chargement du fichier de configuration
@@ -30,12 +31,23 @@ class ControleurCatalogue {
         ] );
         $db->setAsGlobal();
         $db->bootEloquent();
+
+        $this->sortMode = $sort;
     }
 
     //Fonction qui retourne la lsite de toute les prestations
     function getAllPrestations(){
 
-        $listePrestations = models\Prestation::get();
+        switch ($this->sortMode){
+            case 1:
+                $listePrestations = models\Prestation::orderBy('prix')->get();
+                break;
+            case 2:
+                $listePrestations = models\Prestation::orderBy('prix', 'DESC')->get();
+                break;
+            default:
+                $listePrestations = models\Prestation::get();
+        }
 
         $vue = new vue\VueCatalogue($listePrestations, "ALL_PRESTATION");
         return $vue->render();

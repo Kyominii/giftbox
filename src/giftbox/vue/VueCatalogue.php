@@ -18,7 +18,27 @@ class VueCatalogue
 
     private function htmlAllPrestation(){
 
-        $html = "<div class=\"ui link cards\">";
+        $html = "<div class=\"ui floating dropdown labeled icon button\" style=\"margin-bottom: 10px\">
+                  <i class=\"filter icon\"></i>
+                  <span class=\"text\">Trier</span>
+                  <div class=\"menu\">
+                      <div class=\"header\">
+                        <i class=\"euro icon\"></i>
+                        Prix
+                      </div>
+                      <div class=\"divider\"></div>
+                      <div class=\"item\" onclick=\"location.href='/catalogue?sort=1';\" data-value='croissant'>
+                        <i class=\"sort numeric ascending icon\"></i>
+                        Croissant
+                      </div>
+                      <div class=\"item\" onclick=\"location.href='/catalogue?sort=2';\" data-value='decroissant'>
+                        <i class=\"sort numeric descending icon\"></i>
+                        Décroissant
+                      </div>
+                  </div>
+                </div>";
+
+        $html = $html . "<div class=\"ui link cards\">";
 
         foreach ($this->pbc as $prestation){
 

@@ -14,7 +14,24 @@ $app->get('/', function(){
 
 //Cas où on veut afficher tout le catalogue
 $app->get('/catalogue', function(){
-    $controlCatalogue = new controleur\ControleurCatalogue();
+
+    //Le mode de tri : 0 => par défaut; 1 => croissant; 2 => décroissant
+    $sortMode = 0;
+
+    if(isset($_GET['sort'])){
+        switch ($_GET['sort']){
+            case "1":
+                $sortMode = 1;
+                break;
+            case "2":
+                $sortMode = 2;
+                break;
+            default:
+                $sortMode = 0;
+        }
+    }
+
+    $controlCatalogue = new controleur\ControleurCatalogue($sortMode);
     echo $controlCatalogue->getAllPrestations();
 });
 
