@@ -64,10 +64,14 @@ class ControleurCatalogue {
         return $vue->render();
     }
 
-    //Je ne vois pas à quoi sert cette fonction pour le moment (il faut continuer à la dev)
-    function affPrestCat(){
+    function affPrestCat($catid){
 
-        $cat = models\Prestation::select('id','nom','descr','cat_id','img','prix')->get();
+        $listePrestCat = models\Prestation::select('id','nom','descr','cat_id','img','prix')
+            ->where('cat_id','=',$catid)
+            ->get();
+
+        $vue = new vue\VueCatalogue($listePrestCat, "PRESTATION_BY_CATEGORIE");
+        return $vue->render();
     }
 
     function affValidationNote($id){
