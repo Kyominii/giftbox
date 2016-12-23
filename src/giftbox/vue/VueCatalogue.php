@@ -87,6 +87,15 @@ class VueCatalogue
 
     private function htmlAllCategorie(){
 
+        $html = "<div><ul>";
+
+        foreach($this->pbc as $categorie){
+            
+            $html = $html . "<li>" . $this->pbc->nom . "</li>";
+        }
+
+        $html = $html . "</ul></div>";
+        return $html;
     }
 
     public function render()
