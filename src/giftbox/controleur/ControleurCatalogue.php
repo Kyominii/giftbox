@@ -64,11 +64,7 @@ class ControleurCatalogue {
         return $vue->render();
     }
 
-    function affPrestCat($nom){
-
-        $catid = models\Categorie::select('id')
-            ->where('nom','=',$nom)
-            ->get();
+    function affPrestCat($catid){
 
         $listePrestCat = models\Prestation::select('id','nom','descr','cat_id','img','prix')
             ->where('cat_id','=',$catid)
