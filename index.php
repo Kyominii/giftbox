@@ -41,6 +41,12 @@ $app->get('/catalogue/:id', function($id){
     echo $controlCatalogue->getPrestationById($id);
 });
 
+//Cas où on veut afficher une liste de prestation en fonction d'une categorie
+$app->get('/catalogue/cat/id', function($catid){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    echo $controlCatalogue->affPrestCat($catid);
+});
+
 $app->post('/post/:id', function($id){
     $controlCatalogue = new controleur\ControleurCatalogue();
     if(isset($_POST["note"])) {
