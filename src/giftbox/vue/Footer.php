@@ -18,6 +18,8 @@ class Footer
                         $('.ui.dropdown').dropdown('set selected', "decroissant");
                     }
                     $('.ui.dropdown').dropdown();
+                    $('.ui.rating').rating('disable');
+;
                 </script>
             </body>
         <html>

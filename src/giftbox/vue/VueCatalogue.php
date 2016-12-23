@@ -56,9 +56,7 @@ class VueCatalogue
                                             $prestation->prix €
                                         </span>
                                         <br>
-                                        <span>
-                                            ".\giftbox\models\Prestation::moyenne($prestation->notation)."
-                                        </span>
+                                        <div class=\"ui rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div>
                                     </div>
                                 </div>
                             </div>";

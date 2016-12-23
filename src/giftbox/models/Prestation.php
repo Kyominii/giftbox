@@ -19,18 +19,22 @@ class Prestation extends \Illuminate\Database\Eloquent\Model
     }
 
     //méthode qui calcule la moyenne des note
-    public static function moyenne($note){
-        $moy = 0;
+    public function moyenne(){
+
+        $somme = 0;
         $taille = 0;
-        foreach ($note as $n){
+
+        foreach ($this->notation as $rowNote){
             $taille++;
-            $moy = $moy + $n->note;
-        }
-        if($taille != 0){
-            return $moy/$taille."/5";
-        }else{
-            return "pas de note";
+            $somme = $somme + $rowNote->note;
         }
 
+        if($taille != 0){
+
+            return $somme/$taille;
+        }else{
+
+            return 0;
+        }
     }
 }
