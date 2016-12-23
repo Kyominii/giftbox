@@ -18,7 +18,7 @@ class Prestation extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany('\giftbox\models\Notation', "pre_id");
     }
 
-    //méthode qui calcule la moyenne des note
+    //méthode qui calcule la moyenne des notes
     public function moyenne(){
 
         $somme = 0;

@@ -41,6 +41,15 @@ $app->get('/catalogue/:id', function($id){
     echo $controlCatalogue->getPrestationById($id);
 });
 
+$app->post('/post/:id', function($id){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    if(isset($_POST["note"])) {
+        $controlCatalogue->ajoutNote($id, $_POST["note"]);
+        unset($_POST["note"]);
+    }
+    echo $controlCatalogue->affValidationNote($id);
+});
+
 //Lancement du micro-framework
 $app->run();
 

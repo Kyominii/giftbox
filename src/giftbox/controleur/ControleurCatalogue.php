@@ -7,7 +7,7 @@ use giftbox\models as models;
 use giftbox\vue as vue;
 
 class ControleurCatalogue {
-	
+
     private $db;
     private $sortMode;
 
@@ -68,5 +68,18 @@ class ControleurCatalogue {
     function affPrestCat(){
 
         $cat = models\Prestation::select('id','nom','descr','cat_id','img','prix')->get();
+    }
+
+    function affValidationNote($id){
+        $vue = new vue\VueNote($id);
+        return $vue->render();
+    }
+
+    //ajoute une note à la base de donnée
+    function ajoutNote($id_pre,$note){
+        $notation = new models\Notation();
+        $notation->note = $note;
+        $notation->pre_id = $id_pre;
+        $notation->save();
     }
 }
