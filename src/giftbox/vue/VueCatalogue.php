@@ -83,6 +83,16 @@ class VueCatalogue
 
     private function htmlPrestationByCatID(){
 
+        $html = "<div><ul>";
+
+        foreach($this->pbc as $prestation){
+
+            $html = $html . "<li>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ", " . $this->pbc->descr . "</li>";
+        }
+
+        $html = $html . "</ul></div>";
+        return $html;
+
     }
 
     private function htmlAllCategorie(){
@@ -90,7 +100,7 @@ class VueCatalogue
         $html = "<div><ul>";
 
         foreach($this->pbc as $categorie){
-            
+
             $html = $html . "<li>" . $this->pbc->nom . "</li>";
         }
 
