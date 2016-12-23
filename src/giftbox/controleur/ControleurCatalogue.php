@@ -74,6 +74,14 @@ class ControleurCatalogue {
         return $vue->render();
     }
 
+    function getAllCategorie(){
+
+
+        $listeCategorie = models\Categorie::get();
+        $vue = new vue\VueCatalogue($listeCategorie, "ALL_CATEGORIE");
+        return $vue->render();
+    }
+
     function affValidationNote($id){
         $vue = new vue\VueNote($id);
         return $vue->render();

@@ -81,6 +81,14 @@ class VueCatalogue
         return $html;
     }
 
+    private function htmlPrestationByCatID(){
+
+    }
+
+    private function htmlAllCategorie(){
+
+    }
+
     public function render()
     {
 
@@ -90,6 +98,12 @@ class VueCatalogue
                 break;
             case "PRESTATION_BY_ID" :
                 $content = $this->htmlPrestationById();
+                break;
+            case "PRESTATION_BY_CATEGORIE" :
+                $content = $this->htmlPrestationByCatId();
+                break;
+            case "ALL_CATEGORIE" :
+                $content = $this->htmlAllCategorie();
                 break;
         }
 
