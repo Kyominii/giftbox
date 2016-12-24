@@ -22,6 +22,8 @@ class Header
                 <title>$title</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
             </head>
+            <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
             <body>
                 
                 <div class="ui inverted vertical center aligned segment">
