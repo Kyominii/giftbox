@@ -56,7 +56,7 @@ class VueCatalogue
                                             $prestation->prix €
                                         </span>
                                         <br>
-                                        <div class=\"ui rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div>
+                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div>
                                     </div>
                                 </div>
                             </div>";
@@ -74,7 +74,7 @@ class VueCatalogue
         $html = $html . "<p>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ", " . $this->pbc->descr . ".</p>";
         $html = $html . "<img src=\"/assets/img/" . $this->pbc->img . "\" border=\"0\" />";
         $html = $html . "<h2>Noter Moi !</h2>";
-        $html = $html . "<form method=\"post\" action=\"/post/".$this->pbc->id."\"> <input type=\"number\" min=\"0\" max=\"5\" name=\"note\" /> ";
+        $html = $html . "<form method=\"post\" action=\"/post/".$this->pbc->id."\"> <input type=\"number\" min=\"1\" max=\"5\" name=\"note\" /> ";
         $html = $html . "<input type=\"submit\" value=\"Envoyer\" /> </form>";
         $html = $html . "</div>";
 

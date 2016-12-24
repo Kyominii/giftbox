@@ -19,15 +19,41 @@ class VueNote
         $this->pbc = $fromController;
     }
 
-    public function render()
-    {
+    private function htmlSuccess(){
+
         $html = "<div>";
         $html = $html . "<h2> merci pour votre note </h2>";
         $html = $html . "<a class=\"ui huge button\" href=\"/catalogue/".$this->pbc."\">Retour<i class=\"right arrow icon\"></i></a>";
         $html = $html . "</div>";
-
         $html = Header::getHeader("Catalogue | Giftbox") . $html . Footer::getFooter();
 
+        return $html;
+    }
+
+    private function htmlFailed(){
+
+        $html = "<div>";
+        $html = $html . "<h2>Une erreur s'est produite (peut déjà voté cette prestation ?)</h2>";
+        $html = $html . "<a class=\"ui huge button\" href=\"/catalogue/".$this->pbc."\">Retour<i class=\"right arrow icon\"></i></a>";
+        $html = $html . "</div>";
+        $html = Header::getHeader("Catalogue | Giftbox") . $html . Footer::getFooter();
+
+        return $html;
+    }
+
+    public function render($success)
+    {
+
+        $html = "";
+
+        switch($success){
+            case true:
+                $html = $this->htmlSuccess();
+                break;
+            case false:
+                $html = $this->htmlFailed();
+                break;
+        }
 
         return $html;
     }

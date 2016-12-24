@@ -76,22 +76,55 @@ class ControleurCatalogue {
 
     function getAllCategorie(){
 
-
         $listeCategorie = models\Categorie::get();
         $vue = new vue\VueCatalogue($listeCategorie, "ALL_CATEGORIE");
         return $vue->render();
     }
 
-    function affValidationNote($id){
+    function affValidationNote($id, $success){
+
         $vue = new vue\VueNote($id);
-        return $vue->render();
+        return $vue->render($success);
     }
 
-    //ajoute une note à la base de donnée
+    //ajoute une note à la base de données
     function ajoutNote($id_pre,$note){
-        $notation = new models\Notation();
-        $notation->note = $note;
-        $notation->pre_id = $id_pre;
-        $notation->save();
+
+        $checked = true;
+
+        //On vérifie si la notation n'a pas déjà été noté dans la session courante
+        if(isset($_SESSION['alreadyNoted'])) {
+
+            foreach ($_SESSION['alreadyNoted'] as $idNoted) {
+
+                if ($idNoted == $id_pre) {
+                    $checked = false;
+                }
+            }
+        }
+
+        if($checked) {
+
+            if($note >= 1 && $note <= 5) {
+
+                $notation = new models\Notation();
+                $notation->note = $note;
+                $notation->pre_id = $id_pre;
+                $notation->save();
+
+                if (!isset($_SESSION['alreadyNoted'])) {
+
+                    $arrayIdNoted = array($id_pre);
+                    $_SESSION['alreadyNoted'] = $arrayIdNoted;
+                } else {
+
+                    array_push($_SESSION['alreadyNoted'], $id_pre);
+                }
+            } else {
+                $checked = false;
+            }
+        }
+
+        return $checked;
     }
 }

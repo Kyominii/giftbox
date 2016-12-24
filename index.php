@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once ("vendor/autoload.php");
 use giftbox\controleur as controleur;
 
@@ -41,13 +41,21 @@ $app->get('/catalogue/:id', function($id){
     echo $controlCatalogue->getPrestationById($id);
 });
 
+//URL pour voté une prestation
 $app->post('/post/:id', function($id){
+
     $controlCatalogue = new controleur\ControleurCatalogue();
+    $success = false;
+
+    //Si l'utilisateur est en train de noter une prestation
     if(isset($_POST["note"])) {
-        $controlCatalogue->ajoutNote($id, $_POST["note"]);
+
+        //On récupère l'état de la notation
+        $success = $controlCatalogue->ajoutNote($id, $_POST["note"]);
         unset($_POST["note"]);
     }
-    echo $controlCatalogue->affValidationNote($id);
+
+    echo $controlCatalogue->affValidationNote($id, $success);
 });
 
 //Lancement du micro-framework
