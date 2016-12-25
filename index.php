@@ -58,6 +58,14 @@ $app->post('/post/:id', function($id){
     echo $controlCatalogue->affValidationNote($id, $success);
 });
 
+$app->get('/addBasket/:id', function($id){
+
+    $controlBaskel = new controleur\ControleurPanier();
+    $controlBaskel->addBasket($id);
+    var_dump($_SESSION['basket']);
+
+});
+
 //Lancement du micro-framework
 $app->run();
 
