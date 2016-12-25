@@ -21,4 +21,12 @@ class ControleurPanier
         }
     }
 
+    public static function getAmountInBasket(){
+        if(!isset($_SESSION['basket'])){
+            return 0;
+        } else {
+            return count($_SESSION['basket']);
+        }
+    }
+
 }

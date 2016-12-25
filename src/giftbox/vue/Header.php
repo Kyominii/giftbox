@@ -15,6 +15,8 @@ class Header
                      <a class=\"item\" href=\"/catalogue\">Catalogue</a>";
         }
 
+        $nbPrestation = \giftbox\controleur\ControleurPanier::getAmountInBasket();
+
         $html = <<<END
         <!DOCTYPE html>
         <html>
@@ -31,8 +33,11 @@ class Header
                       <div class="ui large secondary inverted pointing menu">
                         $menu
                         <div class="right item">
-                          <a class="ui inverted button" style="margin-right: 7px">Connexion</a>
-                          <a class="ui inverted button">Inscription</a>
+                          <a class="ui inverted button" style="margin-right: 7px">Gérer un coffret</a>
+                          <a class="ui inverted button">
+                            <i class="icon gift"></i>Panier
+                            <div class="floating ui red circular label">$nbPrestation</div>
+                          </a>
                         </div>
                       </div>
                     </div>

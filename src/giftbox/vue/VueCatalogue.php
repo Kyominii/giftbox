@@ -56,7 +56,8 @@ class VueCatalogue
                                             $prestation->prix €
                                         </span>
                                         <br>
-                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div>
+                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div><br /><br />
+                                        <button class=\"positive ui button\" onclick=\"window.open('/addBasket/" . $prestation->id . "', '_blank');window.location.reload();\">Ajouter au panier</button>
                                     </div>
                                 </div>
                             </div>";
@@ -73,7 +74,8 @@ class VueCatalogue
 
         $html = "<div>";
         $html = $html . "<p>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ", " . $this->pbc->descr . ".</p>";
-        $html = $html . "<img src=\"/assets/img/" . $this->pbc->img . "\" border=\"0\" />";
+        $html = $html . "<img src=\"/assets/img/" . $this->pbc->img . "\" border=\"0\" /><br />
+                         <button class=\"positive ui button\" onclick=\"window.open('/addBasket/" . $this->pbc->id . "', '_blank');window.location.reload();\">Ajouter au panier</button></div><br /><br />";
         $html = $html . "<h2>Noter Moi !</h2>";
         $html = $html . "<div id=\"prestaNote\" class=\"ui star rating\" data-rating=\"" . $this->pbc->moyenne() . "\" data-max-rating=\"5\"></div>";
         $html = $html . "</div>
