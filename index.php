@@ -8,8 +8,10 @@ $app = new \Slim\Slim;
 
 //Cas où nous sommes à la racine du site
 $app->get('/', function(){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    $listePrest = $controlCatalogue->getBestPrestation();
     $vueAccueil = new \giftbox\vue\VueAccueil();
-    echo $vueAccueil->render();
+    echo $vueAccueil->render($listePrest);
 });
 
 //Cas où on veut afficher tout le catalogue

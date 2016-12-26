@@ -10,6 +10,6 @@ class Categorie extends \Illuminate\Database\Eloquent\Model
 
     //Déclaration de relation avec le modèle Prestation
     public function prestations(){
-        return $this->hasMany('\giftbox\models\Prestation', "id_cat");
+        return $this->hasMany('\giftbox\models\Prestation', "cat_id");
     }
 }

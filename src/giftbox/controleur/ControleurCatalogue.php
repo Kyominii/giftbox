@@ -81,6 +81,26 @@ class ControleurCatalogue {
         return $vue->render();
     }
 
+    function getBestPrestation(){
+        $listeCategorie = models\Categorie::get();
+        $listeBestPrest = array();
+        foreach ($listeCategorie as $cat){
+            $note = -1;
+            $id = -1;
+            $listePrest = $cat->prestations;
+            foreach ($listePrest as $index => $prest){
+                if($prest->moyenne() > $note){
+                    $note = $prest->moyenne();
+                    $id = $index;
+                }
+            }
+            if($id != -1){
+                $listeBestPrest[] = $listePrest[$id];
+            }
+        }
+        return $listeBestPrest;
+    }
+
     function affValidationNote($id, $success){
 
         $vue = new vue\VueNote($id);
