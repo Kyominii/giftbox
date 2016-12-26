@@ -26,6 +26,16 @@ class Header
             </head>
             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
             <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
+            <script>
+                function sleep(milliseconds) {
+                  var start = new Date().getTime();
+                  for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds){
+                      break;
+                    }
+                  }
+                }
+            </script>
             <body>
                 
                 <div class="ui inverted vertical center aligned segment">
@@ -34,7 +44,7 @@ class Header
                         $menu
                         <div class="right item">
                           <a class="ui inverted button" style="margin-right: 7px">Gérer un coffret</a>
-                          <a class="ui inverted button">
+                          <a class="ui inverted button" href="/panier">
                             <i class="icon gift"></i>Panier
                             <div class="floating ui red circular label">$nbPrestation</div>
                           </a>

@@ -8,7 +8,6 @@ use giftbox\vue as vue;
 
 class ControleurCatalogue {
 
-    private $db;
     private $sortMode;
 
     //Constructeur du controleur du catalogue

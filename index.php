@@ -60,6 +60,7 @@ $app->post('/post/:id', function($id){
     echo $controlCatalogue->affValidationNote($id, $success);
 });
 
+//On ajoute un article au panier
 $app->get('/addBasket/:id', function($id) use ($app){
 
     $controlBaskel = new controleur\ControleurPanier();
@@ -69,8 +70,20 @@ $app->get('/addBasket/:id', function($id) use ($app){
 
 });
 
-$app->get('/reset', function(){
-   session_unset();
+//On retire un article du panier
+$app->get('/delBasket/:id', function($id) use ($app){
+
+    $controlBaskel = new controleur\ControleurPanier();
+    $controlBaskel->removeBasket($id);
+
+    echo "<script>window.close();</script>";
+
+});
+
+//On affiche le panier
+$app->get('/panier', function(){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->renderBasket();
 });
 
 //Lancement du micro-framework
