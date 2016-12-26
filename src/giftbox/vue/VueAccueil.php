@@ -12,8 +12,42 @@ namespace giftbox\vue;
 class VueAccueil
 {
 
-    public function render()
+    public function render($listePrest)
     {
+
+        $BestPrest = "<div class=\"ui vertical stripe segment prest title\">
+                        <div class=\"ui text container\">
+                           <h3 class=\"ui header\">Nos Meilleurs Prestations</h3>
+                        </div>
+                      </div>
+                      
+                      <div class=\"ui vertical stripe quote segment\">
+            <div class=\"ui equal width stackable internally celled grid\">
+              <div class=\"center aligned row\">";
+
+        foreach ($listePrest as $prestation){
+            $BestPrest = $BestPrest."<div class=\"column\">
+                                        <h2>$prestation->nom</h2>
+                                        <div class=\"meta\">
+                                            <p class=\"categorie\">" . $prestation->categorie->nom . "</p>
+                                        </div>
+                                        <div class=\"extra content\">
+                                        <span>
+                                            $prestation->prix €
+                                        </span>
+                                        <br>
+                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div><br /><br />
+                                        <a class=\"ui large button\" href=\"/catalogue/".$prestation->id."\">Détail</a>
+                                    </div>
+                                    </div>";
+        }
+
+        $BestPrest = $BestPrest."       </div>
+                                    </div>
+                                </div>";
+
+
+
         $html = <<<END
         
         <!DOCTYPE html>
@@ -29,6 +63,11 @@ class VueAccueil
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
         
           <style type="text/css">
+         
+            
+            .prest.title{
+                text-align: center;
+            }
         
             .hidden.menu {
               display: none;
@@ -167,6 +206,7 @@ class VueAccueil
         
           </div>
         
+          $BestPrest   
           <div class="ui vertical stripe segment">
             <div class="ui middle aligned stackable grid container">
               <div class="row">
@@ -254,6 +294,7 @@ class VueAccueil
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
           <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
           <script>
+          $('.ui.rating').rating('disable');
           $(document)
             .ready(function() {
         

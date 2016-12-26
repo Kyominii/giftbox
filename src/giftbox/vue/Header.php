@@ -15,6 +15,8 @@ class Header
                      <a class=\"item\" href=\"/catalogue\">Catalogue</a>";
         }
 
+        $nbPrestation = \giftbox\controleur\ControleurPanier::getAmountInBasket();
+
         $html = <<<END
         <!DOCTYPE html>
         <html>
@@ -22,6 +24,18 @@ class Header
                 <title>$title</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
             </head>
+            <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
+            <script>
+                function sleep(milliseconds) {
+                  var start = new Date().getTime();
+                  for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds){
+                      break;
+                    }
+                  }
+                }
+            </script>
             <body>
                 
                 <div class="ui inverted vertical center aligned segment">
@@ -29,8 +43,11 @@ class Header
                       <div class="ui large secondary inverted pointing menu">
                         $menu
                         <div class="right item">
-                          <a class="ui inverted button" style="margin-right: 7px">Connexion</a>
-                          <a class="ui inverted button">Inscription</a>
+                          <a class="ui inverted button" style="margin-right: 7px">Gérer un coffret</a>
+                          <a class="ui inverted button" href="/panier">
+                            <i class="icon gift"></i>Panier
+                            <div class="floating ui red circular label">$nbPrestation</div>
+                          </a>
                         </div>
                       </div>
                     </div>

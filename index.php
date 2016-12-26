@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require_once ("vendor/autoload.php");
 use giftbox\controleur as controleur;
 
@@ -8,8 +8,10 @@ $app = new \Slim\Slim;
 
 //Cas où nous sommes à la racine du site
 $app->get('/', function(){
+    $controlCatalogue = new controleur\ControleurCatalogue();
+    $listePrest = $controlCatalogue->getBestPrestation();
     $vueAccueil = new \giftbox\vue\VueAccueil();
-    echo $vueAccueil->render();
+    echo $vueAccueil->render($listePrest);
 });
 
 //Cas où on veut afficher tout le catalogue
@@ -47,13 +49,47 @@ $app->get('/catalogue/cat/id', function($catid){
     echo $controlCatalogue->affPrestCat($catid);
 });
 
+//URL pour voté une prestation
 $app->post('/post/:id', function($id){
+
     $controlCatalogue = new controleur\ControleurCatalogue();
+    $success = false;
+
+    //Si l'utilisateur est en train de noter une prestation
     if(isset($_POST["note"])) {
-        $controlCatalogue->ajoutNote($id, $_POST["note"]);
+
+        //On récupère l'état de la notation
+        $success = $controlCatalogue->ajoutNote($id, $_POST["note"]);
         unset($_POST["note"]);
     }
-    echo $controlCatalogue->affValidationNote($id);
+
+    echo $controlCatalogue->affValidationNote($id, $success);
+});
+
+//On ajoute un article au panier
+$app->get('/addBasket/:id', function($id) use ($app){
+
+    $controlBaskel = new controleur\ControleurPanier();
+    $controlBaskel->addBasket($id);
+
+    echo "<script>window.close();</script>";
+
+});
+
+//On retire un article du panier
+$app->get('/delBasket/:id', function($id) use ($app){
+
+    $controlBaskel = new controleur\ControleurPanier();
+    $controlBaskel->removeBasket($id);
+
+    echo "<script>window.close();</script>";
+
+});
+
+//On affiche le panier
+$app->get('/panier', function(){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->renderBasket();
 });
 
 //Lancement du micro-framework

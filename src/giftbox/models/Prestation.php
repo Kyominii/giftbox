@@ -31,7 +31,7 @@ class Prestation extends \Illuminate\Database\Eloquent\Model
 
         if($taille != 0){
 
-            return $somme/$taille;
+            return round($somme/$taille);
         }else{
 
             return 0;
