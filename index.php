@@ -44,9 +44,26 @@ $app->get('/catalogue/:id', function($id){
 });
 
 //Cas où on veut afficher une liste de prestation en fonction d'une categorie
-$app->get('/catalogue/cat/id', function($catid){
-    $controlCatalogue = new controleur\ControleurCatalogue();
-    echo $controlCatalogue->affPrestCat($catid);
+$app->get('/catalogue/cat/:id', function($id){
+
+    //Le mode de tri : 0 => par défaut; 1 => croissant; 2 => décroissant
+    $sortMode = 0;
+
+    if(isset($_GET['sort'])){
+        switch ($_GET['sort']){
+            case "1":
+                $sortMode = 1;
+                break;
+            case "2":
+                $sortMode = 2;
+                break;
+            default:
+                $sortMode = 0;
+        }
+    }
+
+    $controlCatalogue = new controleur\ControleurCatalogue($sortMode);
+    echo $controlCatalogue->affPrestCat($id);
 });
 
 //URL pour voté une prestation

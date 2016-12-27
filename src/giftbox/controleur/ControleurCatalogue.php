@@ -48,15 +48,16 @@ class ControleurCatalogue {
                 $listePrestations = models\Prestation::get();
         }
 
-        $vue = new vue\VueCatalogue($listePrestations, "ALL_PRESTATION");
+        $data = [$listePrestations, $this->getAllCategorie()];
+
+        $vue = new vue\VueCatalogue($data, "ALL_PRESTATION");
         return $vue->render();
     }
 
     //Retourne le code HTML correspondant à l'affichage de la prestation que l'on souhaite (il faut donner son id)
     function getPrestationById($id){
 
-        $prestation = models\Prestation::select('id','nom','descr','cat_id','img','prix')
-                            ->where('id','=',$id)
+        $prestation = models\Prestation::where('id','=',$id)
                             ->first();
 
         $vue = new vue\VueCatalogue($prestation, "PRESTATION_BY_ID");
@@ -65,19 +66,31 @@ class ControleurCatalogue {
 
     function affPrestCat($catid){
 
-        $listePrestCat = models\Prestation::select('id','nom','descr','cat_id','img','prix')
-            ->where('cat_id','=',$catid)
-            ->get();
+        switch ($this->sortMode){
+            case 1:
+                $listePrestCat = models\Prestation::where('cat_id','=',$catid)
+                    ->orderBy('prix')
+                    ->get();
+                break;
+            case 2:
+                $listePrestCat = models\Prestation::where('cat_id','=',$catid)
+                    ->orderBy('prix', 'DESC')
+                    ->get();
+                break;
+            default:
+                $listePrestCat = models\Prestation::where('cat_id','=',$catid)
+                    ->get();
+        }
 
-        $vue = new vue\VueCatalogue($listePrestCat, "PRESTATION_BY_CATEGORIE");
+        $data = [$listePrestCat, $this->getAllCategorie()];
+
+        $vue = new vue\VueCatalogue($data, "PRESTATION_BY_CATEGORIE");
         return $vue->render();
     }
 
     function getAllCategorie(){
 
-        $listeCategorie = models\Categorie::get();
-        $vue = new vue\VueCatalogue($listeCategorie, "ALL_CATEGORIE");
-        return $vue->render();
+        return models\Categorie::get();
     }
 
     function getBestPrestation(){
