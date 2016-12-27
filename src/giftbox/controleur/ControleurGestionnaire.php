@@ -1,15 +1,50 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: elias
- * Date: 27/12/16
- * Time: 04:27
- */
 
 namespace giftbox\controleur;
 
+use Illuminate\Database\Capsule\Manager as DB;
+use giftbox\models as models;
+use giftbox\vue as vue;
 
-class ControleurGestionnaire
-{
+class ControleurGestionnaire {
+
+    //Constructeur du controleur du gestionnaire
+    function __construct(){
+        $db = new DB();
+
+        //Chargement du fichier de configuration
+        $config=parse_ini_file('src/conf/db.ini');
+
+        //Création de la connexion à la base de données
+        $db->addConnection( [
+            'driver' => $config['driver'],
+            'host' => $config['host'],
+            'database' => $config['database'],
+            'username' => $config['username'],
+            'password' => $config['password'],
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => ''
+        ] );
+        $db->setAsGlobal();
+        $db->bootEloquent();
+    }
+
+
+    //ajoute une prestation à la base de données
+    function ajoutPrestation($nom,$descr,$cat_id,$img){
+
+
+        $prestation = new models\Prestation();
+        $prestation ->nom = $nom;
+        $prestation ->descr = $descr;
+        $prestation ->cat_id = $cat_id;
+        $prestation ->img = $img;
+        $prestation ->categorie();
+
+        $prestation->save();
+
+    }
+
 
 }

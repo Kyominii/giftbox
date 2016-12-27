@@ -116,13 +116,13 @@ class ControleurCatalogue {
 
             foreach ($_SESSION['alreadyNoted'] as $idNoted) {
 
-                if ($idNoted == $id_pre) {
-                    $checked = false;
-                }
+              if ($idNoted == $id_pre) {
+                  $checked = false;
+              }
             }
         }
 
-        if($checked) {
+         if($checked) {
 
             if($note >= 1 && $note <= 5) {
 
@@ -133,17 +133,39 @@ class ControleurCatalogue {
 
                 if (!isset($_SESSION['alreadyNoted'])) {
 
-                    $arrayIdNoted = array($id_pre);
-                    $_SESSION['alreadyNoted'] = $arrayIdNoted;
+                     $arrayIdNoted = array($id_pre);
+                     $_SESSION['alreadyNoted'] = $arrayIdNoted;
                 } else {
-
                     array_push($_SESSION['alreadyNoted'], $id_pre);
                 }
             } else {
-                $checked = false;
+            $checked = false;
             }
-        }
+         }
 
-        return $checked;
+         return $checked;
     }
+
+    //ajoute une prestation à la base de données
+    function ajoutPrestation($nom,$descr,$cat_id,$img){
+
+
+        $prestation = new models\Prestation();
+        $prestation ->nom = $nom;
+        $prestation ->descr = $descr;
+        $prestation ->cat_id = $cat_id;
+        $prestation ->img = $img;
+        $prestation ->categorie();
+
+        $prestation->save();
+
+        if (!isset($_SESSION['alreadyNoted'])) {
+
+            $arrayIdNoted = array($id_pre);
+            $_SESSION['alreadyNoted'] = $arrayIdNoted;
+        } else {
+            array_push($_SESSION['alreadyNoted'], $id_pre);
+        }
+    }
+
 }
