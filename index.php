@@ -92,6 +92,12 @@ $app->get('/panier', function(){
     echo $controlBaskel->renderBasket();
 });
 
+//Connexion
+$app->get('/connexion', function(){
+    $vueConnexion = new \giftbox\vue\VueConnexion();
+    echo $vueConnexion->render();
+});
+
 //Lancement du micro-framework
 $app->run();
 

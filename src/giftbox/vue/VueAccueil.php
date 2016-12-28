@@ -190,7 +190,7 @@ class VueAccueil
                 <a class="active item" href="#">Accueil</a>
                 <a class="item" href="/catalogue">Catalogue</a>
                 <div class="right item">
-                  <a class="ui inverted button">Connexion</a>
+                  <a class="ui inverted button" href="/connexion">Connexion</a>
                   <a class="ui inverted button">Inscription</a>
                 </div>
               </div>
