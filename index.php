@@ -10,7 +10,7 @@ $app = new \Slim\Slim;
 $app->get('/', function(){
     $controlCatalogue = new controleur\ControleurCatalogue();
     $listePrest = $controlCatalogue->getBestPrestation();
-    $vueAccueil = new \giftbox\vue\VueAccueil();
+    $vueAccueil = new \giftbox\vue\VueAccueil($_SESSION["connecte"]);
     echo $vueAccueil->render($listePrest);
 });
 
@@ -111,8 +111,36 @@ $app->get('/panier', function(){
 
 //Connexion
 $app->get('/connexion', function(){
-    $vueConnexion = new \giftbox\vue\VueConnexion();
+    $vueConnexion = new \giftbox\vue\VueConnexion("Connexion");
     echo $vueConnexion->render();
+});
+
+//URL pour connexion validé
+$app->post('/connexion/confirmation', function(){
+
+    $controlGestion = new controleur\ControleurGestionnaire();
+    $success = false;
+
+    //Si l'utilisateur est en train de se connecter
+    if(isset($_POST["pseudo"])) {
+
+        //On récupère l'état de la connexion
+        $success = $controlGestion->connexion($_POST["pseudo"],$_POST["pass"]);
+    }
+
+    echo $controlGestion->affValidationConnextion($success);
+});
+
+//On affiche le panier
+$app->get('/deconnexion', function(){
+    $_SESSION["connecte"] = -1;
+    $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
+    echo $vueConnexion->render();
+});
+
+//On affiche le panier
+$app->get('/gestion', function(){
+    echo "rajouter toute les fonction de gestion ici";
 });
 
 //Lancement du micro-framework

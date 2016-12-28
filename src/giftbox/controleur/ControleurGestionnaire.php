@@ -46,6 +46,31 @@ class ControleurGestionnaire {
 
     }
 
+    function connexion($pseudo,$mdp){
+        $res = models\Utilisateur::where('pseudo','like',$pseudo)
+                                    ->where('mdp','like',$mdp)
+                                    ->first();
+        if($res != NULL){
+            if($res->grade == 'admin'){
+                $_SESSION["connecte"]=1;
+                return true;
+            }else{
+                $_SESSION["connecte"]=0;
+                return true;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    function affValidationConnextion($success){
+        if($success == true){
+            $vue = new vue\VueConnexion("ConnexionT");
+        }else{
+            $vue = new vue\VueConnexion("ConnexionF");
+        }
+        echo $vue->render();
+    }
 
 
 }

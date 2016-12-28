@@ -11,6 +11,35 @@ namespace giftbox\vue;
 
 class VueAccueil
 {
+    private $selecteur;
+
+    function __construct( $sel)
+    {
+        $this->selecteur = $sel;
+    }
+
+    public function user(){
+        $html =  "<div class=\"right item\">
+                  <a class=\"ui inverted button\" href=\"/deconnexion\">Déconnexion</a>
+                </div>";
+        return $html;
+    }
+
+    public function admin(){
+        $html =  "<div class=\"right item\">
+                  <a class=\"ui inverted button\" href=\"/deconnexion\">Déconnexion</a>
+                  <a class=\"ui inverted button\" href=\"/gestion\">Gestion</a>
+                </div>";
+        return $html;
+    }
+
+    public function visiteur(){
+       $html =  "<div class=\"right item\">
+                  <a class=\"ui inverted button\" href=\"/connexion\">Connexion</a>
+                  <a class=\"ui inverted button\">Inscription</a>
+                </div>";
+       return $html;
+    }
 
     public function render($listePrest)
     {
@@ -45,6 +74,18 @@ class VueAccueil
         $BestPrest = $BestPrest."       </div>
                                     </div>
                                 </div>";
+
+        switch ($this->selecteur){
+            case "1":
+                $menu = $this->admin();
+                break;
+            case "0":
+                $menu = $this->user();
+                break;
+            default :
+                $menu = $this->visiteur();
+                break;
+        }
 
 
 
@@ -189,10 +230,7 @@ class VueAccueil
                 </a>
                 <a class="active item" href="#">Accueil</a>
                 <a class="item" href="/catalogue">Catalogue</a>
-                <div class="right item">
-                  <a class="ui inverted button" href="/connexion">Connexion</a>
-                  <a class="ui inverted button">Inscription</a>
-                </div>
+                $menu
               </div>
             </div>
         

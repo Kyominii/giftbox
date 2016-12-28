@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 22 Décembre 2016 à 16:22
+-- Généré le :  Mer 28 Décembre 2016 à 19:45
 -- Version du serveur :  5.7.14
 -- Version de PHP :  5.6.25
 
@@ -61,7 +61,13 @@ INSERT INTO `notation` (`id`, `note`, `pre_id`) VALUES
 (1, 3, 1),
 (2, 4, 1),
 (3, 5, 1),
-(4, 2, 2);
+(4, 2, 2),
+(40, 3, 3),
+(41, 4, 4),
+(42, 4, 4),
+(43, 3, 1),
+(44, 3, 5),
+(45, 4, 2);
 
 -- --------------------------------------------------------
 
@@ -111,6 +117,29 @@ INSERT INTO `prestation` (`id`, `nom`, `descr`, `cat_id`, `img`, `prix`) VALUES
 (26, 'Planètes Laser', 'Laser game : Gilet électronique et pistolet laser comme matériel, vous voilà équipé.', 2, 'laser.jpg', '15.00'),
 (27, 'Fort Aventure', 'Découvrez Fort Aventure à Bainville-sur-Madon, un site Accropierre unique en Lorraine ! Des Parcours Acrobatiques pour petits et grands, Jeu Mission Aventure, Crypte de Crapahute, Tyrolienne, Saut à l\'élastique inversé, Toboggan géant... et bien plus encore.', 2, 'fort.jpg', '25.00');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id` int(11) NOT NULL,
+  `pseudo` text NOT NULL,
+  `mdp` int(11) NOT NULL,
+  `grade` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `pseudo`, `mdp`, `grade`) VALUES
+(1, 'teddy', 123, 'admin'),
+(2, 'alex', 456, 'admin'),
+(3, 'samir', 789, 'user'),
+(4, 'elias', 111, 'user');
+
 --
 -- Index pour les tables exportées
 --
@@ -134,6 +163,12 @@ ALTER TABLE `prestation`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT pour les tables exportées
 --
 
@@ -146,28 +181,17 @@ ALTER TABLE `categorie`
 -- AUTO_INCREMENT pour la table `notation`
 --
 ALTER TABLE `notation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 --
 -- AUTO_INCREMENT pour la table `prestation`
 --
 ALTER TABLE `prestation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
-CREATE TABLE Coffret(
-  id int auto_increment,
-  date_creation DATE,
-  PRIMARY KEY(id)
-);
-
-CREATE TABLE Contient(
-  id_coffret int,
-  id_prestation int,
-  nb_prestation int,
-  PRIMARY KEY(id_coffret, id_prestation),
-  FOREIGN KEY (id_coffret) REFERENCES Coffret(id),
-  FOREIGN KEY (id_prestation) REFERENCES Prestation(id));
-
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
