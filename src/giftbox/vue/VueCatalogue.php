@@ -18,7 +18,12 @@ class VueCatalogue
 
     private function htmlAllPrestation(){
 
-        $html = "<div class=\"ui floating dropdown labeled icon button\" style=\"margin-bottom: 10px\">
+        $htmlCatDropdown = "";
+        foreach ($this->pbc[1] as $categorie){
+            $htmlCatDropdown = $htmlCatDropdown . "<div class=\"item\" data-value=\"$categorie->id\" onclick=\"location.href='/catalogue/cat/$categorie->id'\">$categorie->nom</div>";
+        }
+
+        $html = "<div class=\"tri ui floating dropdown labeled icon button\" style=\"margin-bottom: 10px\">
                   <i class=\"filter icon\"></i>
                   <span class=\"text\">Trier</span>
                   <div class=\"menu\">
@@ -27,29 +32,37 @@ class VueCatalogue
                         Prix
                       </div>
                       <div class=\"divider\"></div>
-                      <div class=\"item\" onclick=\"location.href='/catalogue?sort=1';\" data-value='croissant'>
+                      <div class=\"item\" onclick=\"location.href='?sort=1';\" data-value='croissant'>
                         <i class=\"sort numeric ascending icon\"></i>
                         Croissant
                       </div>
-                      <div class=\"item\" onclick=\"location.href='/catalogue?sort=2';\" data-value='decroissant'>
+                      <div class=\"item\" onclick=\"location.href='?sort=2';\" data-value='decroissant'>
                         <i class=\"sort numeric descending icon\"></i>
                         Décroissant
                       </div>
                   </div>
+                </div>
+                <div class=\"categorie ui selection dropdown\">
+                  <input name=\"gender\" type=\"hidden\">
+                  <i class=\"dropdown icon\"></i>
+                  <div class=\"default text\">Catégorie</div>
+                  <div class=\"menu\">"
+                    . $htmlCatDropdown .
+                 "</div>
                 </div>";
 
         $html = $html . "<div class=\"ui link cards\">";
 
-        foreach ($this->pbc as $prestation){
+        foreach ($this->pbc[0] as $prestation){
 
             $html = $html . "<div class=\"card\">
                                 <div class=\"image\">
                                     <a class=\"image\" href=\"/catalogue/$prestation->id\"><img class=\"ui medium image\" src=\"/assets/img/$prestation->img\" /></a>
                                 </div>
                                 <div class=\"content\">
-                                    <div class=\"header\">$prestation->nom</div>
+                                    <div class=\"header\" onclick=\"location.href='/catalogue/$prestation->id'\">$prestation->nom</div>
                                     <div class=\"meta\">
-                                        <a>" . $prestation->categorie->nom . "</a>
+                                        <a href=\"/catalogue/cat/" . $prestation->categorie->id . "\">" . $prestation->categorie->nom . "</a>
                                     </div>
                                     <div class=\"extra content\">
                                         <span>
@@ -106,28 +119,67 @@ class VueCatalogue
 
     private function htmlPrestationByCatID(){
 
-        $html = "<div><ul>";
-
-        foreach($this->pbc as $prestation){
-
-            $html = $html . "<li>" . $this->pbc->nom . " : " . $this->pbc->prix . "€, " . $this->pbc->categorie->nom . ", " . $this->pbc->descr . "</li>";
+        $htmlCatDropdown = "";
+        foreach ($this->pbc[1] as $categorie){
+            $htmlCatDropdown = $htmlCatDropdown . "<div class=\"item\" data-value=\"$categorie->id\" onclick=\"location.href='/catalogue/cat/$categorie->id'\">$categorie->nom</div>";
         }
 
-        $html = $html . "</ul></div>";
-        return $html;
+        $html = "<div class=\"tri ui floating dropdown labeled icon button\" style=\"margin-bottom: 10px\">
+                  <i class=\"filter icon\"></i>
+                  <span class=\"text\">Trier</span>
+                  <div class=\"menu\">
+                      <div class=\"header\">
+                        <i class=\"euro icon\"></i>
+                        Prix
+                      </div>
+                      <div class=\"divider\"></div>
+                      <div class=\"item\" onclick=\"location.href='?sort=1';\" data-value='croissant'>
+                        <i class=\"sort numeric ascending icon\"></i>
+                        Croissant
+                      </div>
+                      <div class=\"item\" onclick=\"location.href='?sort=2';\" data-value='decroissant'>
+                        <i class=\"sort numeric descending icon\"></i>
+                        Décroissant
+                      </div>
+                  </div>
+                </div>
+                <div class=\"categorie ui selection dropdown\">
+                  <input name=\"gender\" type=\"hidden\">
+                  <i class=\"dropdown icon\"></i>
+                  <div class=\"default text\">Catégorie</div>
+                  <div class=\"menu\">"
+                    . $htmlCatDropdown .
+                 "</div>
+                </div>";
 
-    }
+        $html = $html . "<div class=\"ui link cards\">";
 
-    private function htmlAllCategorie(){
+        foreach ($this->pbc[0] as $prestation){
 
-        $html = "<div><ul>";
-
-        foreach($this->pbc as $categorie){
-
-            $html = $html . "<li>" . $this->pbc->nom . "</li>";
+            $html = $html . "<div class=\"card\">
+                                <div class=\"image\">
+                                    <a class=\"image\" href=\"/catalogue/$prestation->id\"><img class=\"ui medium image\" src=\"/assets/img/$prestation->img\" /></a>
+                                </div>
+                                <div class=\"content\">
+                                    <div class=\"header\" onclick=\"location.href='/catalogue/$prestation->id'\">$prestation->nom</div>
+                                    <div class=\"meta\">
+                                        <a>" . $prestation->categorie->nom . "</a>
+                                    </div>
+                                    <div class=\"extra content\">
+                                        <span>
+                                            $prestation->prix €
+                                        </span>
+                                        <br>
+                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div><br /><br />
+                                        <button class=\"positive ui button\" onclick=\"window.open('/addBasket/" . $prestation->id . "', '_blank');sleep(500);window.location.reload();\">Ajouter au panier</button>
+                                    </div>
+                                </div>
+                            </div>";
         }
 
-        $html = $html . "</ul></div>";
+        $html = $html . "</div>
+                         <script>$('.ui.rating').rating('disable');</script>";
+
         return $html;
     }
 
@@ -144,9 +196,8 @@ class VueCatalogue
             case "PRESTATION_BY_CATEGORIE" :
                 $content = $this->htmlPrestationByCatId();
                 break;
-            case "ALL_CATEGORIE" :
-                $content = $this->htmlAllCategorie();
-                break;
+            default :
+                $content = "";
         }
 
         $html = Header::getHeader("Catalogue | Giftbox") . $content . Footer::getFooter();

@@ -152,6 +152,22 @@ ALTER TABLE `notation`
 --
 ALTER TABLE `prestation`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+CREATE TABLE Coffret(
+  id int auto_increment,
+  date_creation DATE,
+  PRIMARY KEY(id)
+);
+
+CREATE TABLE Contient(
+  id_coffret int,
+  id_prestation int,
+  nb_prestation int,
+  PRIMARY KEY(id_coffret, id_prestation),
+  FOREIGN KEY (id_coffret) REFERENCES Coffret(id),
+  FOREIGN KEY (id_prestation) REFERENCES Prestation(id));
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

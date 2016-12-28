@@ -11,9 +11,14 @@ class Footer
                 <script>
                     var url = window.location.href;
                     if(url.indexOf("sort=1") !== -1){
-                        $('.ui.dropdown').dropdown('set selected', "croissant");
+                        $('.tri.ui.dropdown').dropdown('set selected', "croissant");
                     } else if(url.indexOf("sort=2") !== -1) {
-                        $('.ui.dropdown').dropdown('set selected', "decroissant");
+                        $('.tri.ui.dropdown').dropdown('set selected', "decroissant");
+                    }
+                    
+                    url = window.location.pathname;
+                    if(url.indexOf("/catalogue/cat/") !== -1){
+                        $('.categorie.ui.dropdown').dropdown('set selected', url.substring(url.indexOf("/catalogue/cat/") + 15));
                     }
                     $('.ui.dropdown').dropdown();
                 </script>
