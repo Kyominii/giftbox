@@ -69,6 +69,43 @@ class ControleurPanier
 
     }
 
+    public function isValid(){
+        if(isset($_SESSION['basket'])) {
+
+            if (ControleurPanier::getAmountInBasket() >= 2) {
+
+                $categorie = array();
+
+                //Pour chaque entrée dans le panier
+                foreach ($_SESSION['basket'] as $id => $amount) {
+
+                    //On récupère la prestation associé à l'id de l'article dans le panier
+                    $prestation = models\Prestation::select('id','nom','descr','cat_id','img','prix')
+                        ->where('id','=',$id)
+                        ->first();
+
+                    $alreadyExists = false;
+                    foreach ($categorie as $value){
+                        if($value == $prestation->cat_id){
+                            $alreadyExists = true;
+                        }
+                    }
+
+                    if(!$alreadyExists){
+                        array_push($categorie, $prestation->cat_id);
+                    }
+                }
+
+                if(count($categorie) >= 2){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
     //Retourne le nombre d'article actuellement dans le panier
     public static function getAmountInBasket(){
 
@@ -104,7 +141,7 @@ class ControleurPanier
             }
         }
 
-        $vue = new VuePanier($data);
+        $vue = new VuePanier([$data, $this->isValid()]);
 
         //On retourne le code HTML généré par la vue
         return $vue->render();
