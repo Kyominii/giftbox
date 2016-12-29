@@ -77,21 +77,23 @@ class ControleurGestionnaire {
     }
 
     //gère la connexion
-    function connexion($pseudo,$mdp){
-        $res = models\Utilisateur::where('pseudo','like',$pseudo)
-                                    ->where('mdp','like',$mdp)
-                                    ->first();
-        if($res != NULL){
-            if($res->grade == 'admin'){
-                $_SESSION["connecte"]=1;
-                return true;
+    function connexion($pseudo, $mdp){
+        $res = models\Utilisateur::where('pseudo','like',$pseudo)->first();
+
+        if(crypt($mdp, "giftboxSalt_betterSecurity") == $res->mdp){
+            if($res != NULL){
+                if($res->grade == 'admin'){
+                    $_SESSION["connecte"]=1;
+                    return true;
+                }else{
+                    $_SESSION["connecte"]=0;
+                    return true;
+                }
             }else{
-                $_SESSION["connecte"]=0;
-                return true;
+                return false;
             }
-        }else{
-            return false;
         }
+
     }
 
     //affiche si une connexion c'est bien effectué ou on

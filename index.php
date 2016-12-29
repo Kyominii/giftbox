@@ -237,6 +237,10 @@ $app->post('/gestion/suspenssion', function(){
     }
 });
 
+$app->get('/hash/:mdp', function($mdp){
+   echo crypt($mdp, "giftboxSalt_betterSecurity");
+});
+
 //Lancement du micro-framework
 $app->run();
 

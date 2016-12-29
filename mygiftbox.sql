@@ -127,7 +127,7 @@ INSERT INTO `prestation` (`id`, `nom`, `descr`, `cat_id`, `img`, `prix`) VALUES
 CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
   `pseudo` text NOT NULL,
-  `mdp` int(11) NOT NULL,
+  `mdp` text NOT NULL,
   `grade` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -136,10 +136,12 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `mdp`, `grade`) VALUES
-(1, 'teddy', 123, 'admin'),
-(2, 'alex', 456, 'admin'),
-(3, 'samir', 789, 'user'),
-(4, 'elias', 111, 'user');
+(1, 'teddy', 'giVxuvcRnyOMQ', 'admin'),
+(2, 'alex', 'giGsHwwgaiGyY', 'admin'),
+(3, 'samir', 'gicF4swmvOOjc', 'user'),
+(4, 'elias', 'giCrZE.CVd9Rs', 'user');
+
+-- teddy: 123 / alex : 456 / samir : 789 / elias : 111
 
 --
 -- Index pour les tables exportées
