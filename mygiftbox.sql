@@ -81,7 +81,8 @@ CREATE TABLE `prestation` (
   `descr` text NOT NULL,
   `cat_id` int(11) NOT NULL,
   `img` text NOT NULL,
-  `prix` decimal(5,2) NOT NULL
+  `prix` decimal(5,2) NOT NULL,
+  `display` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
