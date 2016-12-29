@@ -134,16 +134,72 @@ $app->post('/connexion/confirmation', function(){
     echo $controlGestion->affValidationConnextion($success);
 });
 
-//On affiche le panier
+//affiche la confirmation de la déconnexion
 $app->get('/deconnexion', function(){
     $_SESSION["connecte"] = -1;
     $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
     echo $vueConnexion->render();
 });
 
-//On affiche le panier
+//On affiche le menu de gestion
 $app->get('/gestion', function(){
-    echo "rajouter toute les fonction de gestion ici";
+    $vueGestion = new \giftbox\vue\VueGestion("gestion");
+    echo $vueGestion->render();
+});
+
+
+//On affiche la confirmation de l'ajout
+$app->post('/gestion/ajout', function(){
+    $controlGestion = new controleur\ControleurGestionnaire();
+    $success = false;
+
+    if(($_POST["nom"] != NULL)&&($_POST["description"] != NULL)&&($_POST["categorie"]!= NULL)&&($_POST["image"] != NULL)&&($_POST["prix"] != NULL)){
+        $success = $controlGestion->ajoutPrestation($_POST["nom"],$_POST["description"],$_POST["categorie"],$_POST["image"],$_POST["prix"]);
+    }
+
+    if($success == true) {
+        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+        echo $vueGestion->render();
+    }else{
+        $vueGestion = new \giftbox\vue\VueGestion("echec");
+        echo $vueGestion->render();
+    }
+});
+
+//On affiche la confirmation de la suppression
+$app->post('/gestion/suppression', function(){
+    $controlGestion = new controleur\ControleurGestionnaire();
+    $success = false;
+
+    if($_POST["id"]!=NULL){
+        $success = $controlGestion->supressionPrestation($_POST["id"]);
+    }
+
+    if($success == true) {
+        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+        echo $vueGestion->render();
+    }else{
+        $vueGestion = new \giftbox\vue\VueGestion("echec");
+        echo $vueGestion->render();
+    }
+});
+
+//On affiche la confirmation de l'activation/désactivation d'une prestation
+$app->post('/gestion/suspenssion', function(){
+    $controlGestion = new controleur\ControleurGestionnaire();
+    $success = false;
+
+    if((isset($_POST["id"]))){
+        $success = $controlGestion->suspenssionPrestation($_POST["id"]);
+    }
+
+    if($success == true) {
+        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+        echo $vueGestion->render();
+    }else{
+        $vueGestion = new \giftbox\vue\VueGestion("echec");
+        echo $vueGestion->render();
+    }
 });
 
 //Lancement du micro-framework

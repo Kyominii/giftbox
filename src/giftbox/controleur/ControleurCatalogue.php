@@ -39,13 +39,18 @@ class ControleurCatalogue {
 
         switch ($this->sortMode){
             case 1:
-                $listePrestations = models\Prestation::orderBy('prix')->get();
+                $listePrestations = models\Prestation::orderBy('prix')
+                                                        ->where('display','like',1)
+                                                        ->get();
                 break;
             case 2:
-                $listePrestations = models\Prestation::orderBy('prix', 'DESC')->get();
+                $listePrestations = models\Prestation::orderBy('prix', 'DESC')
+                                                        ->where('display','like',1)
+                                                        ->get();
                 break;
             default:
-                $listePrestations = models\Prestation::get();
+                $listePrestations = models\Prestation::where('display','like',1)
+                                                        ->get();
         }
 
         $data = [$listePrestations, $this->getAllCategorie()];
@@ -70,15 +75,18 @@ class ControleurCatalogue {
             case 1:
                 $listePrestCat = models\Prestation::where('cat_id','=',$catid)
                     ->orderBy('prix')
+                    ->where('display','like',1)
                     ->get();
                 break;
             case 2:
                 $listePrestCat = models\Prestation::where('cat_id','=',$catid)
                     ->orderBy('prix', 'DESC')
+                    ->where('display','like',1)
                     ->get();
                 break;
             default:
                 $listePrestCat = models\Prestation::where('cat_id','=',$catid)
+                    ->where('display','like',1)
                     ->get();
         }
 

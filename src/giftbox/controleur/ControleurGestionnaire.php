@@ -32,20 +32,51 @@ class ControleurGestionnaire {
 
 
     //ajoute une prestation à la base de données
-    function ajoutPrestation($nom,$descr,$cat_id,$img){
+    function ajoutPrestation($nom,$descr,$cat_id,$img,$prix){
 
 
         $prestation = new models\Prestation();
-        $prestation ->nom = $nom;
-        $prestation ->descr = $descr;
-        $prestation ->cat_id = $cat_id;
-        $prestation ->img = $img;
-        $prestation ->categorie();
+        $prestation->nom = $nom;
+        $prestation->descr = $descr;
+        $prestation->cat_id = $cat_id;
+        $prestation->img = $img;
+        $prestation->prix = $prix;
 
         $prestation->save();
 
+        return true;
+
     }
 
+    //supprime une prestation à la base de données
+    function supressionPrestation($id){
+
+        models\Prestation::where('id','=',$id)
+            ->delete();
+
+        return true;
+
+    }
+
+    //susppention et désusppention
+    function suspenssionPrestation($id){
+        $prestation = models\Prestation::where('id','=',$id)
+                                            ->first();
+        if($prestation != NULL){
+            if($prestation->display == 1){
+                $prestation->display = 0;
+                $prestation->save();
+            }else {
+                $prestation->display = 1;
+                $prestation->save();
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //gère la connexion
     function connexion($pseudo,$mdp){
         $res = models\Utilisateur::where('pseudo','like',$pseudo)
                                     ->where('mdp','like',$mdp)
@@ -63,6 +94,7 @@ class ControleurGestionnaire {
         }
     }
 
+    //affiche si une connexion c'est bien effectué ou on
     function affValidationConnextion($success){
         if($success == true){
             $vue = new vue\VueConnexion("ConnexionT");
