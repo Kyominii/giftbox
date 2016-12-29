@@ -102,13 +102,15 @@ class ControleurCatalogue {
     }
 
     function getBestPrestation(){
-        $listeCategorie = models\Categorie::get()
-                            ->where('display','like',1);
+        $listeCategorie = models\Categorie::get();
         $listeBestPrest = array();
         foreach ($listeCategorie as $cat){
             $note = -1;
             $id = -1;
-            $listePrest = $cat->prestations;
+            $idCat = $cat->id;
+            $listePrest = models\Prestation::where('cat_id','=',$idCat)
+                ->where('display','like',1)
+                ->get();;
             foreach ($listePrest as $index => $prest){
                 if($prest->moyenne() > $note){
                     $note = $prest->moyenne();
