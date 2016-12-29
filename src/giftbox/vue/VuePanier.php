@@ -61,7 +61,7 @@ class VuePanier
                                     Informations de commande
                                   </div>
                                   <div class=\"content\">
-                                    <form class=\"ui form\">
+                                    <form id=\"infos_client\" class=\"ui form\" action=\"/post/checkout/step1\" method=\"post\">
                                       <h4 class=\"ui dividing header\">Informations client</h4>
                                       <div class=\"field\">
                                         <label>Nom</label>
@@ -98,9 +98,15 @@ class VuePanier
                                       </div>
                                       <div class=\"one field\">
                                         <div class=\"field\">
+                                            <label>E-Mail</label>
+                                            <input name=\"client_email\" placeholder=\"jean.dujardin@gmail.com\" type=\"text\" />
+                                        </div>
+                                      </div>
+                                      <div class=\"one field\">
+                                        <div class=\"field\">
                                           <label>Pays</label>
-                                          <div class=\"ui fluid search selection dropdown\">
-                                            <input name=\"client_pays\" type=\"hidden\">
+                                          <div id=\"pays_dropdown\" class=\"ui fluid search selection dropdown\">
+                                            <input id=\"input_pays_client\" name=\"client_pays\" type=\"hidden\">
                                             <i class=\"dropdown icon\"></i>
                                             <div class=\"default text\">Selectionnez votre pays</div>
                                             <div class=\"menu\">
@@ -353,50 +359,146 @@ class VuePanier
                                       <h4 class=\"ui dividing header\">Message à remettre</h4>
                                       <div class=\"field\">
                                         <label>Message</label>
-                                        <textarea></textarea>
+                                        <textarea form=\"infos_client\" name=\"coffret_msg\"></textarea>
                                       </div>
                                       <h4 class=\"ui dividing header\">Méthode de paiement</h4>
                                       <div class=\"inline fields\">
-                                        <label for=\"fruit\">Selectionnez votre moyen de paiement :</label>
+                                        <label for=\"coffret_moyen_paiement\">Selectionnez votre moyen de paiement :</label>
                                         <div class=\"field\">
                                           <div class=\"ui radio checkbox\">
-                                            <input name=\"fruit\" checked=\"\" tabindex=\"0\" class=\"hidden\" type=\"radio\">
-                                            <label><i class=\"paypal icon\"></i>PayPal</label>
+                                            <input name=\"coffret_moyen_paiement\" checked=\"\" tabindex=\"0\" type=\"radio\" value=\"Classique\">
+                                            <label><i class=\"credit card alternative icon\"></i>Classique</label>
                                           </div>
                                         </div>
                                         <div class=\"field\">
                                           <div class=\"ui radio checkbox\">
-                                            <input name=\"fruit\" tabindex=\"0\" class=\"hidden\" type=\"radio\">
-                                            <label><i class=\"credit card alternative icon\"></i>Carte Bancaire</label>
-                                          </div>
-                                        </div>
-                                        <div class=\"field\">
-                                          <div class=\"ui radio checkbox\">
-                                            <input name=\"fruit\" tabindex=\"0\" class=\"hidden\" type=\"radio\">
+                                            <input name=\"coffret_moyen_paiement\" tabindex=\"0\" type=\"radio\" value=\"Cagnotte\">
                                             <label><i class=\"gift icon\"></i>Cagnotte</label>
                                           </div>
                                         </div>
                                       </div>
+                                      <div class=\"ui error message\"></div>
                                     </form>
-                                  </div>
+                                  </div>                                 
                                   <div class=\"actions\">
                                     <div class=\"ui black deny button\">
                                       Annuler
                                     </div>
-                                    <div class=\"ui positive right labeled icon button\">
+                                    <div id=\"submitInfosClient\" class=\"ui positive right labeled icon button\">
                                       Confirmer
                                       <i class=\"checkmark icon\"></i>
                                     </div>
                                   </div>
                              </div>
-                             <button id=\"modalButton\" class=\"ui positive basic button\" onclick=\"openModal\">Passer la commande</button>
+                             <button id=\"modalButton\" class=\"ui positive basic button\">Passer la commande</button>
                              <script>
+                             
+                             $('#infos_client')
+                              .form({
+                                fields: {
+                                  nom: {
+                                    identifier: 'client_nom',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer votre nom'
+                                      }
+                                    ]
+                                  },
+                                  prenom: {
+                                    identifier: 'client_prenom',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer votre prenom'
+                                      }
+                                    ]
+                                  },
+                                  num_rue: {
+                                    identifier: 'client_numero_rue',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer le numéro de la rue'
+                                      }
+                                    ]
+                                  },
+                                  rue: {
+                                    identifier: 'client_rue',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer le nom de votre rue'
+                                      }
+                                    ]
+                                  },
+                                  ville: {
+                                    identifier: 'client_ville',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer votre ville'
+                                      }
+                                    ]
+                                  },
+                                  codePostal: {
+                                    identifier: 'client_codePostal',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer votre code postal'
+                                      }
+                                    ]
+                                  },
+                                  email: {
+                                    identifier: 'client_email',
+                                    rules: [
+                                      {
+                                        type   : 'email',
+                                        prompt : 'Veuillez entrer votre email'
+                                      }
+                                    ]
+                                  },
+                                  pays: {
+                                    identifier: 'client_pays',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez renseigner votre pays'
+                                      }
+                                    ]
+                                  },
+                                  message: {
+                                    identifier: 'coffret_msg',
+                                    rules: [
+                                      {
+                                        type   : 'minLength[20]',
+                                        prompt : 'Veuillez renseigner un texte d\'au moins 20 caractères'
+                                      }
+                                    ]
+                                  }
+                                }
+                              })
+                            ;
+                             
                              $(document).ready(function(){
                                   $(\"#modalButton\").click(function(){
-                                  $('.ui.modal').modal('show');
+                                    $('.ui.modal').modal('show');
+                                    $('.ui.modal').modal('setting', 'onApprove', function(){return false;});
                                   });
                                   
+                                  $(\"#submitInfosClient\").click(function(){
+                                    $(\"#infos_client\").form('validate form');
+                                    $(\"#infos_client\").form('submit');
+                                  });
+                                  
+                                  $('#pays_dropdown').dropdown('setting', 'onChange', function(val) {
+                                        $('#input_pays_client').val(val);
+                                    });
+                                  
                                   $('.ui.radio.checkbox').checkbox();
+                                  
+                                  
                              });
                              </script>";
 
@@ -409,16 +511,331 @@ class VuePanier
         return $html;
     }
 
-    public function render()
+    public function htmlSummary(){
+
+        $totalPrix = 0;
+
+        $html = "<div class=\"ui ordered steps\">
+                      <div class=\"active step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Résumé</div>
+                          <div class=\"description\">Résumé de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Paiement</div>
+                          <div class=\"description\">Paiement de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Finalisation</div>
+                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                        </div>
+                      </div>
+                 </div>
+
+                 <h4 class=\"ui dividing header\">Récapitulatif des articles commandés :</h4>
+                 <div class=\"ui middle aligned divided list\">";
+        foreach ($this->pbc['panier'] as $data){
+
+            $sousTotal = $data[0]->prix * $data[1];
+            $totalPrix = $totalPrix + $sousTotal;
+
+            $html = $html . "<div class=\"item\">
+
+                                <img class=\"ui avatar image\" src=\"/assets/img/" . $data[0]->img . "\">
+                                <div class=\"content\">
+                                  $data[1] " . $data[0]->nom . " à " . $data[0]->prix . "€ l'unité
+                                </div>
+                             </div>";
+        }
+        $html = $html . "</div>";
+
+        $html = $html . "<h4 class=\"ui dividing header\">Récapitulatif des informations du client :</h4>";
+
+        $html = $html . "<div class=\"ui bulleted list\">
+                  <div class=\"item\">Nom : " . $this->pbc['nom'] . "</div>
+                  <div class=\"item\">Prénom : " . $this->pbc['prenom'] . "</div>
+                  <div class=\"item\">N° Rue : " . $this->pbc['numRue'] . "</div>
+                  <div class=\"item\">Nom rue : " . $this->pbc['nomRue'] . "</div>
+                  <div class=\"item\">Ville : " . $this->pbc['ville'] . "</div>
+                  <div class=\"item\">Code Postal : " . $this->pbc['cp'] . "</div>
+                  <div class=\"item\">Email : " . $this->pbc['email'] . "</div>
+                  <div class=\"item\">Pays : " . $this->pbc['pays'] . "</div>
+              </div>
+              
+              <h4 class=\"ui dividing header\">Message</h4>
+              <p>" . $this->pbc['msg'] . "</p>
+              
+              <h4 class=\"ui dividing header\">Méthode de paiement</h4>
+              <p>" . $this->pbc['paiement'] . "</p>
+              
+              <h4 class=\"ui dividing header\">Total à payer (TTC) : $totalPrix €</h4>
+              
+              <form id=\"infosFormulaire\" method=\"post\" action=\"/post/checkout/step2\">
+                <input type=\"hidden\" name=\"nom_cli\" value=\"" . $this->pbc['nom'] . "\" />
+                <input type=\"hidden\" name=\"prenom_cli\" value=\"" . $this->pbc['prenom'] . "\" />
+                <input type=\"hidden\" name=\"num_rue_cli\" value=\"" . $this->pbc['numRue'] . "\" />
+                <input type=\"hidden\" name=\"nom_rue_cli\" value=\"" . $this->pbc['nomRue'] . "\" />
+                <input type=\"hidden\" name=\"ville_cli\" value=\"" . $this->pbc['ville'] . "\" />
+                <input type=\"hidden\" name=\"cp_cli\" value=\"" . $this->pbc['cp'] . "\" />
+                <input type=\"hidden\" name=\"email_cli\" value=\"" . $this->pbc['email'] . "\" />
+                <input type=\"hidden\" name=\"pays_cli\" value=\"" . $this->pbc['pays'] . "\" />
+                <input type=\"hidden\" name=\"msg_coffret\" value=\"" . $this->pbc['msg'] . "\" />
+                <input type=\"hidden\" name=\"paiement_coffret\" value=\"" . $this->pbc['paiement'] . "\" />
+              </form>
+              
+              <div class=\"ui buttons\">
+                  <button class=\"ui button\" onclick=\"location.href='/panier'\">Annuler</button>
+                  <div class=\"or\" data-text=\"ou\"></div>
+                  <button id=\"confirmButton\" class=\"ui positive button\">Continuer</button>
+              </div>
+              
+              <script>
+               $(document).ready(function(){
+              
+                  $(\"#confirmButton\").click(function(){
+                    $(\"#infosFormulaire\").form('submit');
+                  });    
+               });
+              </script>";
+
+        return $html;
+    }
+
+    public function htmlPayClassic(){
+        $html = "<div class=\"ui ordered steps\">
+                      <div class=\"completed step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Résumé</div>
+                          <div class=\"description\">Résumé de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"active step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Paiement</div>
+                          <div class=\"description\">Paiement de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Finalisation</div>
+                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                        </div>
+                      </div>
+                 </div>
+                 
+                 <form id=\"infosFormulaire\" class=\"ui form\" method=\"post\" action=\"/post/checkout/step3\">
+                  <h4 class=\"ui dividing header\">Informations bancaires</h4>
+                  <div class=\"field\">
+                    <label>Type de paiement</label>
+                    <div id=\"dropdownTypeCarte\" class=\"ui selection dropdown\">
+                      <input name=\"type_carte\" type=\"hidden\">
+                      <div class=\"default text\">Type</div>
+                      <i class=\"dropdown icon\"></i>
+                      <div class=\"menu\">
+                        <div class=\"item\" data-value=\"visa\">
+                          <i class=\"visa icon\"></i>
+                          Visa
+                        </div>
+                        <div class=\"item\" data-value=\"discover\">
+                          <i class=\"credit card alternative icon\"></i>
+                          Carte Bancaire
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class=\"fields\">
+                    <div class=\"seven wide field\">
+                      <label>Numéro de carte</label>
+                      <input name=\"num_carte\" maxlength=\"16\" placeholder=\"Carte #\" type=\"text\">
+                    </div>
+                    <div class=\"three wide field\">
+                      <label>Cryptogramme Visuel</label>
+                      <input name=\"crypto_visuel\" maxlength=\"3\" placeholder=\"CVC\" type=\"text\">
+                    </div>
+                    <div class=\"six wide field\">
+                      <label>Expiration</label>
+                      <div class=\"two fields\">
+                        <div class=\"field\">
+                          <select class=\"ui fluid search dropdown\" name=\"mois_expiration\">
+                            <option value=\"\">Mois</option>
+                            <option value=\"1\">Janvier</option>
+                            <option value=\"2\">Février</option>
+                            <option value=\"3\">Mars</option>
+                            <option value=\"4\">Avril</option>
+                            <option value=\"5\">Mai</option>
+                            <option value=\"6\">Juin</option>
+                            <option value=\"7\">Juillet</option>
+                            <option value=\"8\">Août</option>
+                            <option value=\"9\">Septembre</option>
+                            <option value=\"10\">Octobre</option>
+                            <option value=\"11\">Novembre</option>
+                            <option value=\"12\">Decembre</option>
+                          </select>
+                        </div>
+                        <div class=\"field\">
+                          <input name=\"annee_expiration\" maxlength=\"4\" placeholder=\"Année\" type=\"text\">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id=\"submitForm\" class=\"ui button\" tabindex=\"0\">Confirmer</div>
+                  <div class=\"ui error message\"></div>
+                </form>
+                <script>
+                    $(document).ready(function(){
+                        
+                        $('#dropdownTypeCarte').dropdown('setting', 'onChange', function(val) {
+                             $('#type_carte').val(val);
+                        });
+                        
+                        $('#infosFormulaire')
+                              .form({
+                                fields: {
+                                  nom: {
+                                    identifier: 'type_carte',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez renseigner le type de carte'
+                                      }
+                                    ]
+                                  },
+                                  prenom: {
+                                    identifier: 'num_carte',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer le numéro de votre carte'
+                                      }
+                                    ]
+                                  },
+                                  num_rue: {
+                                    identifier: 'crypto_visuel',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer le cryptogramme qui se trouve derrière votre carte'
+                                      }
+                                    ]
+                                  },
+                                  rue: {
+                                    identifier: 'mois_expiration',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer le mois d\'expiration de votre carte'
+                                      }
+                                    ]
+                                  },
+                                  ville: {
+                                    identifier: 'annee_expiration',
+                                    rules: [
+                                      {
+                                        type   : 'empty',
+                                        prompt : 'Veuillez entrer l\'année d\'expiration de votre carte'
+                                      }
+                                    ]
+                                  }
+                                }
+                              })
+                            ;
+                  
+                      $(\"#submitForm\").click(function(){
+                        $(\"#infosFormulaire\").form('submit');
+                      });    
+                   });
+               </script>";
+
+        return $html;
+    }
+
+    public function htmlPayPool(){
+        $html = "<div class=\"ui ordered steps\">
+                      <div class=\"completed step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Résumé</div>
+                          <div class=\"description\">Résumé de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"active step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Paiement</div>
+                          <div class=\"description\">Paiement de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Finalisation</div>
+                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                        </div>
+                      </div>
+                 </div>
+                 <h1>WIP</h1>";
+
+        return $html;
+    }
+
+    public function htmlFinish(){
+        $html = "<div class=\"ui ordered steps\">
+                      <div class=\"completed step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Résumé</div>
+                          <div class=\"description\">Résumé de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"completed step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Paiement</div>
+                          <div class=\"description\">Paiement de vos achats</div>
+                        </div>
+                      </div>
+                      <div class=\"completed step\">
+                        <div class=\"content\">
+                          <div class=\"title\">Finalisation</div>
+                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                        </div>
+                      </div>
+                 </div>
+                 <h1>Félicitation</h1>
+                 <p>Vous pouvez désormais acceder à votre coffret à travers <a href=\"/coffret/" . $this->pbc[1] . "\" target=\"_blank\">ce lien</a>";
+
+        return $html;
+    }
+
+    public function render($selecteur = "")
     {
 
-        $html = Header::getHeader("Panier | Giftbox");
-
-        //Si le panier est vide ou non
-        if(count($this->pbc) != 0){
-            $html = $html . $this->htmlFilledBasket();
-        } else {
-            $html = $html . $this->htmlEmptyBasket();
+        switch($selecteur){
+            case "RECAPITULATIF":
+                $html = Header::getHeader("Recapitulatif | Giftbox");
+                $html = $html . $this->htmlSummary();
+                break;
+            case "PREVIEW":
+                $html = Header::getHeader("Panier | Giftbox");
+                if(count($this->pbc[0]) != 0){
+                    $html = $html . $this->htmlFilledBasket();
+                } else {
+                    $html = $html . $this->htmlEmptyBasket();
+                }
+                break;
+            case "PAY_CLASSIC":
+                $html = Header::getHeader("Paiement | Giftbox");
+                $html = $html . $this->htmlPayClassic();
+                break;
+            case "PAY_POOL":
+                $html = Header::getHeader("Paiement | Giftbox");
+                $html = $html . $this->htmlPayPool();
+                break;
+            case "FINISH":
+                $html = Header::getHeader("Finalisation | Giftbox");
+                $html = $html . $this->htmlFinish();
+                break;
+            default:
+                $html = Header::getHeader("Panier | Giftbox");
         }
 
         $html = $html . Footer::getFooter();

@@ -104,5 +104,4 @@ class ControleurGestionnaire {
         echo $vue->render();
     }
 
-
 }

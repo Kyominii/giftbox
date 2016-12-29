@@ -139,6 +139,40 @@ $app->get('/deconnexion', function(){
     $_SESSION["connecte"] = -1;
     $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
     echo $vueConnexion->render();
+
+$app->post('/post/checkout/step1', function(){
+    if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
+        if($_POST['client_nom'] != "" && $_POST['client_prenom'] != "" && $_POST['client_numero_rue'] != "" && $_POST['client_rue'] != "" && $_POST['client_ville'] != "" && $_POST['client_codePostal'] != "" && $_POST['client_email'] != "" && $_POST['client_pays'] != "" && $_POST['coffret_msg'] != "" && $_POST['coffret_moyen_paiement'] != ""){
+
+            $controlBaskel = new controleur\ControleurPanier();
+            echo $controlBaskel->renderSummaryBasket($_POST['client_nom'], $_POST['client_prenom'], $_POST['client_numero_rue'], $_POST['client_rue'], $_POST['client_ville'], $_POST['client_codePostal'], $_POST['client_email'], $_POST['client_pays'], $_POST['coffret_msg'], $_POST['coffret_moyen_paiement']);
+        }
+    }
+});
+
+$app->post('/post/checkout/step2', function(){
+    if(isset($_POST['nom_cli']) && isset($_POST['prenom_cli']) && isset($_POST['num_rue_cli']) && isset($_POST['nom_rue_cli']) && isset($_POST['ville_cli']) && isset($_POST['cp_cli']) && isset($_POST['email_cli']) && isset($_POST['pays_cli']) && isset($_POST['msg_coffret']) && isset($_POST['paiement_coffret'])){
+        if($_POST['nom_cli'] != "" && $_POST['prenom_cli'] != "" && $_POST['num_rue_cli'] != "" && $_POST['nom_rue_cli'] != "" && $_POST['ville_cli'] != "" && $_POST['cp_cli'] != "" && $_POST['email_cli'] != "" && $_POST['pays_cli'] != "" && $_POST['msg_coffret'] != "" && $_POST['paiement_coffret'] != ""){
+
+            $controlBaskel = new controleur\ControleurPanier();
+            echo $controlBaskel->confirmBasket($_POST['nom_cli'], $_POST['prenom_cli'], $_POST['num_rue_cli'], $_POST['nom_rue_cli'], $_POST['ville_cli'], $_POST['cp_cli'], $_POST['email_cli'], $_POST['pays_cli'], $_POST['msg_coffret'], $_POST['paiement_coffret']);
+        }
+    }
+});
+
+$app->post('/post/checkout/step3', function(){
+    if(isset($_SESSION['purchaseInProgress'])){
+        if($_SESSION['purchaseInProgress'] != ""){
+            $controlBaskel = new controleur\ControleurPanier();
+            echo $controlBaskel->paymentDone();
+        }
+    }
+});
+
+$app->get('/coffret/:slug', function($slug){
+    $controler = new controleur\ControleurCoffret();
+    echo $controler->displayGift($slug);
+
 });
 
 //On affiche le menu de gestion

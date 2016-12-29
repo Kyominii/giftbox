@@ -144,7 +144,103 @@ class ControleurPanier
         $vue = new VuePanier([$data, $this->isValid()]);
 
         //On retourne le code HTML généré par la vue
-        return $vue->render();
+        return $vue->render("PREVIEW");
     }
 
+    public function renderSummaryBasket($nom, $prenom, $numRue, $nomRue, $ville, $cp, $email, $pays, $msg, $paiement){
+        $data['nom'] = $nom;
+        $data['prenom'] = $prenom;
+        $data['numRue'] = $numRue;
+        $data['nomRue'] = $nomRue;
+        $data['ville'] = $ville;
+        $data['cp'] = $cp;
+        $data['email'] = $email;
+        $data['pays'] = $pays;
+        $data['msg'] = $msg;
+        $data['paiement'] = $paiement;
+        $data['panier'] = array();
+
+        foreach ($_SESSION['basket'] as $id => $amount) {
+
+            $prestation = models\Prestation::select('id','nom','descr','cat_id','img','prix')
+                ->where('id','=',$id)
+                ->first();
+
+            array_push($data['panier'], [$prestation, $amount]);
+        }
+
+        $vue = new VuePanier($data);
+        return $vue->render("RECAPITULATIF");
+    }
+
+    public function confirmBasket($nom, $prenom, $numRue, $nomRue, $ville, $cp, $email, $pays, $msg, $paiement){
+
+        $client = models\Client::where('nom', '=', $nom)
+            ->where('prenom', '=', $prenom)
+            ->first();
+
+
+
+        if(!$client){
+            $client = new models\Client();
+            $client->nom = $nom;
+            $client->prenom = $prenom;
+            $client->numAdresse = $numRue;
+            $client->nomAdresse = $nomRue;
+            $client->ville = $ville;
+            $client->codePostal = $cp;
+            $client->email = $email;
+            $client->pays = $pays;
+            $client->save();
+        }
+
+        $coffret = new models\Coffret();
+        $coffret->date_creation = date('Y-m-d');
+        $coffret->paiement = $paiement;
+        $coffret->id_cli = $client->id;
+        $coffret->message = $msg;
+        $coffret->save();
+
+        foreach ($_SESSION['basket'] as $id => $amount) {
+
+            $contient = new models\Contient();
+            $contient->id_coffret = $coffret->id;
+            $contient->id_prestation = $id;
+            $contient->nb_prestation = $amount;
+            $contient->save();
+        }
+
+        unset($_SESSION['basket']);
+
+        $_SESSION['purchaseInProgress'] = $coffret->id;
+
+        $vue = new VuePanier(null);
+
+        if($paiement == "Classique"){
+            $html = $vue->render("PAY_CLASSIC");
+        } else {
+            $html = $vue->render("PAY_POOL");
+        }
+
+        return $html;
+    }
+
+    public function paymentDone(){
+
+        $idCoffret = $_SESSION['purchaseInProgress'];
+        unset($_SESSION['purchaseInProgress']);
+
+        $coffret = models\Coffret::where('id', '=', $idCoffret)->first();
+        $coffret->date_paiement = date('Y-m-d');
+        $coffret->slug = uniqid("giftbox", true);
+        $coffret->save();
+
+        $client = models\Client::where('id', '=', $coffret->id_cli)->first();
+
+        $mail = "Voici votre lien de gestion http://giftbox.localhost/coffret/$coffret->slug";
+        mail($client->email, "Lien de gestion Giftbox", $mail);
+
+        $vue = new VuePanier([$idCoffret, $coffret->slug]);
+        return $vue->render("FINISH");
+    }
 }

@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Teddy
- * Date: 21/12/2016
- * Time: 18:27
- */
 
 namespace giftbox\vue;
-
 
 class VueAccueil
 {
@@ -51,8 +44,8 @@ class VueAccueil
                       </div>
                       
                       <div class=\"ui vertical stripe quote segment\">
-            <div class=\"ui equal width stackable internally celled grid\">
-              <div class=\"center aligned row\">";
+                        <div class=\"ui equal width stackable internally celled grid\">
+                            <div class=\"center aligned row\">";
 
         foreach ($listePrest as $prestation){
             $BestPrest = $BestPrest."<div class=\"column\">

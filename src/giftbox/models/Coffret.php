@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Teddy
- * Date: 28/12/2016
- * Time: 12:33
- */
 
 namespace giftbox\models;
 
@@ -17,5 +11,9 @@ class Coffret extends \Illuminate\Database\Eloquent\Model
 
     public function prestations(){
         return $this->hasMany('\giftbox\models\Contient', 'id_coffret');
+    }
+
+    public function client(){
+        return $this->belongsTo('\giftbox\models\Client', 'id_cli');
     }
 }
