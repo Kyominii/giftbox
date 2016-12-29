@@ -8,6 +8,9 @@ $app = new \Slim\Slim;
 
 //Cas où nous sommes à la racine du site
 $app->get('/', function(){
+    if(!isset($_SESSION["connecte"])){
+        $_SESSION["connecte"] = -1;
+    }
     $controlCatalogue = new controleur\ControleurCatalogue();
     $listePrest = $controlCatalogue->getBestPrestation();
     $vueAccueil = new \giftbox\vue\VueAccueil($_SESSION["connecte"]);
