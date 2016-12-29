@@ -135,10 +135,11 @@ $app->post('/connexion/confirmation', function(){
 });
 
 //affiche la confirmation de la déconnexion
-$app->get('/deconnexion', function(){
+$app->get('/deconnexion', function() {
     $_SESSION["connecte"] = -1;
     $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
     echo $vueConnexion->render();
+});
 
 $app->post('/post/checkout/step1', function(){
     if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
