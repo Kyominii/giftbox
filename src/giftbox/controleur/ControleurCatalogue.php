@@ -102,7 +102,8 @@ class ControleurCatalogue {
     }
 
     function getBestPrestation(){
-        $listeCategorie = models\Categorie::get();
+        $listeCategorie = models\Categorie::get()
+                            ->where('display','like',1);
         $listeBestPrest = array();
         foreach ($listeCategorie as $cat){
             $note = -1;
