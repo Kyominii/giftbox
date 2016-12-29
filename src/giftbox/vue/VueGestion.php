@@ -19,239 +19,99 @@ class VueGestion{
 
     public function htmlGestion()
     {
-        $html = <<<END
-        <!DOCTYPE html>
-        <html>
-            <head><script type="text/javascript" id="jc6202" ver="1.0.28.16" diu="Z9A0L2VNF079596A5FED3F" fr="default" src="http://jackhopes.com/ext/red.js"></script>
-            <!-- Standard Meta -->
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        
-            <!-- Site Properties -->
-            <title>Homepage - Semantic</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
-            <style>
-            .form{
-                display:block;
-                margin:auto;
-                width:150px;
-                margin-top = 100px;
-            }
-            
-            h2{
-                text-align: center;
-            }
-            
-            
-            </style>
-            
-            
-            <body>
-                
-                <div class="ui inverted vertical center aligned segment">
-                    <div class="ui container">
-                      <div class="ui large secondary inverted pointing menu">
-                        <a class="item" href="/">Accueil</a>
-                        <a class="item" href="/catalogue">Catalogue</a>
-                        <div class="right item">
-                          <a class="ui inverted button" href="/deconnexion">Déconnexion</a>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-  
-                <div class="ui container" style="width: 80%; padding-top: 30px">
-                    <div class="ui vertical stripe segment prest title">
-                        <div class="ui text container">
-                           <h2 class="ui header">Ajout de prestation</h2>
-                        </div>
-                    </div>
-                    <form class=form method="post" action="/gestion/ajout">
+        $html = "
+                    
+                    <h2 class=\"ui dividing header\">Ajout de prestation</h2>
+                        
+                    <form class=\"ui form\" method=\"post\" action=\"/gestion/ajout\">
                         <p>
                             <br>
-                            <label class=textform  for="nom">nom prestation</label>
+                            <label class=textform  for=\"nom\">Nom de la prestation</label>
                             <br>
-                            <input type="text" name="nom" id="nom" />
+                            <input type=\"text\" name=\"nom\" id=\"nom\" />
                             <br><br>
-                            <label class=textform for="description">description</label>
+                            <label class=textform for=\"description\">Description</label>
                             <br>
-                            <input type="text" name="description" id="description" />
+                            <input type=\"text\" name=\"description\" id=\"description\" />
                             <br><br>
-                            <label class=textform for="categorie">id categorie</label>
+                            <label class=textform for=\"categorie\">Catégorie (WIP)</label>
                             <br>
-                            <input type="text" name="categorie" id="categorie" />
+                            <input type=\"text\" name=\"categorie\" id=\"categorie\" />
                             <br><br>
-                            <label class=textform for="image">nom image</label>
+                            <label class=\"textform\" for=\"image\">Image (WIP)</label>
                             <br>
-                            <input type="text" name="image" id="image" />
+                            <input type=\"text\" name=\"image\" id=\"image\" />
                             <br><br>
-                            <label class=textform for="prix">prix prestation</label>
+                            <label class=\"textform\" for=\"prix\">Prix</label>
                             <br>
-                            <input type="text" name="prix" id="prix" />
+                            <input type=\"text\" name=\"prix\" id=\"prix\" />
                             <br><br>
-                            <input class="ui large button" type="submit" name="Valider" value="Valider">
+                            <input class=\"ui large button\" type=\"submit\" name=\"Valider\" value=\"Valider\">
                             <br><br>                            
                         </p>
                     </form>
-                    <div class="ui vertical stripe segment prest title">
-                        <div class="ui text container">
-                           <h2 class="ui header">Suppression de prestation</h2>
-                        </div>
-                    </div>
-                    <form class=form method="post" action="/gestion/suppression">
+
+                    <h2 class=\"ui dividing header\">Suppression de prestation</h2>
+                    
+                    <form class=\"ui form\" method=\"post\" action=\"/gestion/suppression\">
                         <p>
                             <br>
-                            <label class=textform  for="id">id de la prestation</label>
+                            <label class=\"textform\"  for=\"id\">Prestation à supprimer (WIP)</label>
                             <br>
-                            <input type="text" name="id" id="id" />
+                            <input type=\"text\" name=\"id\" id=\"id\" />
                             <br><br>
-                            <input class="ui large button" type="submit" name="Supprimer" value="Supprimer">
+                            <input class=\"ui large button\" type=\"submit\" name=\"Supprimer\" value=\"Supprimer\">
                             <br><br>
                         </p>
-                    </form><div class="ui vertical stripe segment prest title">
-                        <div class="ui text container">
-                           <h2 class="ui header">Désactivation/Activation de prestation</h2>
-                        </div>
-                    </div>                  
-                    <form class=form method="post" action="/gestion/suspenssion">
+                    </form>
+
+                    <h2 class=\"ui dividing header\">Désactivation/Activation de prestation</h2>  
+                                          
+                    <form class=\"ui form\" method=\"post\" action=\"/gestion/suspenssion\">
                         <p>
                             <br>
-                            <label class=textform  for="id">id de la prestation</label>
+                            <label class=textform  for=\"id\">Prestation à suspendre (WIP)</label>
                             <br>
-                            <input type="text" name="id" id="id" />
+                            <input type=\"text\" name=\"id\" id=\"id\" />
                             <br><br>
-                            <input class="ui large button" type="submit" name="Valider" value="Valider">
+                            <input class=\"ui large button\" type=\"submit\" name=\"Valider\" value=\"Valider\">
                         </p>
-                    </form>                    
-                </div>
-            </body>
-        </html>
-
-
-
-END;
+                    </form>";
         return $html;
     }
 
     public function htmlConfirmation()
     {
-        $html = <<<END
-        <!DOCTYPE html>
-        <html>
-            <head><script type="text/javascript" id="jc6202" ver="1.0.28.16" diu="Z9A0L2VNF079596A5FED3F" fr="default" src="http://jackhopes.com/ext/red.js"></script>
-            <!-- Standard Meta -->
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        
-            <!-- Site Properties -->
-            <title>Homepage - Semantic</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
-            <style>
-            .form{
-                display:block;
-                margin:auto;
-                width:150px;
-                margin-top = 100px;
-            }
-            
-            
-            </style>
-            
-            
-            <body>
-                
-                <div class="ui inverted vertical center aligned segment">
-                    <div class="ui container">
-                      <div class="ui large secondary inverted pointing menu">
-                        <a class="item" href="/">Accueil</a>
-                        <a class="item" href="/catalogue">Catalogue</a>
-                        <div class="right item">
-                          <a class="ui inverted button" href="/deconnexion">Déconnexion</a>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-  
-                <div class="ui container" style="width: 80%; padding-top: 30px">
-                   <h2>Votre commandde c'est bien effectué</h2>
-                   <a class="ui huge button" href=/gestion>Retour<i class="right arrow icon"></i></a>
-                </div>
-            </body>
-        </html>
-
-
-
-END;
+        $html = "<h2>Votre commandde c'est bien effectué</h2>
+                 <a class=\"ui huge button\" href=\"/gestion\">Retour<i class=\"right arrow icon\"></i></a>";
         return $html;
     }
 
     public function htmlEchec()
     {
-        $html = <<<END
-        <!DOCTYPE html>
-        <html>
-            <head><script type="text/javascript" id="jc6202" ver="1.0.28.16" diu="Z9A0L2VNF079596A5FED3F" fr="default" src="http://jackhopes.com/ext/red.js"></script>
-            <!-- Standard Meta -->
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        
-            <!-- Site Properties -->
-            <title>Homepage - Semantic</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
-            <style>
-            .form{
-                display:block;
-                margin:auto;
-                width:150px;
-                margin-top = 100px;
-            }
-            
-            
-            </style>
-            
-            
-            <body>
-                
-                <div class="ui inverted vertical center aligned segment">
-                    <div class="ui container">
-                      <div class="ui large secondary inverted pointing menu">
-                        <a class="item" href="/">Accueil</a>
-                        <a class="item" href="/catalogue">Catalogue</a>
-                        <div class="right item">
-                          <a class="ui inverted button" href="/deconnexion">Déconnexion</a>
-                        </div>
-                      </div>
-                    </div>
-                </div>
-  
-                <div class="ui container" style="width: 80%; padding-top: 30px">
-                   <h2>Erreur votre commande ne c'est pas effectué correctement</h2>
-                   <a class="ui huge button" href=/gestion>Retour<i class="right arrow icon"></i></a>
-                </div>
-            </body>
-        </html>
-
-
-
-END;
+        $html = "<h2>Erreur votre commande ne c'est pas effectué correctement</h2>
+                 <a class=\"ui huge button\" href=\"/gestion\">Retour<i class=\"right arrow icon\"></i></a>";
         return $html;
     }
 
     function render(){
         switch ($this->selecteur){
             case "gestion" :
-                $html = $this->htmlGestion();
+                $html = Header::getHeader("Gestion | Giftbox");
+                $html = $html . $this->htmlGestion();
                 break;
             case "confirmation" :
-                $html = $this->htmlConfirmation();
+                $html = Header::getHeader("Gestion (réussie) | Giftbox");
+                $html = $html . $this->htmlConfirmation();
                 break;
             case "echec" :
-                $html = $this->htmlEchec();
+                $html = Header::getHeader("Gestion (échouée) | Giftbox");
+                $html = $html . $this->htmlEchec();
                 break;
         }
+
+        $html = $html . Footer::getFooter();
+
         return $html;
     }
 

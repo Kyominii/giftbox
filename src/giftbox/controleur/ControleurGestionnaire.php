@@ -103,7 +103,7 @@ class ControleurGestionnaire {
         }else{
             $vue = new vue\VueConnexion("ConnexionF");
         }
-        echo $vue->render();
+        return $vue->render();
     }
 
 }

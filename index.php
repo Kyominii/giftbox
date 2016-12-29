@@ -178,62 +178,71 @@ $app->get('/coffret/:slug', function($slug){
 
 //On affiche le menu de gestion
 $app->get('/gestion', function(){
-    $vueGestion = new \giftbox\vue\VueGestion("gestion");
-    echo $vueGestion->render();
+    if($_SESSION['connecte'] == 1){
+        $vueGestion = new \giftbox\vue\VueGestion("gestion");
+        echo $vueGestion->render();
+    }
+
 });
 
 
 //On affiche la confirmation de l'ajout
 $app->post('/gestion/ajout', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if(($_POST["nom"] != NULL)&&($_POST["description"] != NULL)&&($_POST["categorie"]!= NULL)&&($_POST["image"] != NULL)&&($_POST["prix"] != NULL)){
-        $success = $controlGestion->ajoutPrestation($_POST["nom"],$_POST["description"],$_POST["categorie"],$_POST["image"],$_POST["prix"]);
-    }
+        if (($_POST["nom"] != NULL) && ($_POST["description"] != NULL) && ($_POST["categorie"] != NULL) && ($_POST["image"] != NULL) && ($_POST["prix"] != NULL)) {
+            $success = $controlGestion->ajoutPrestation($_POST["nom"], $_POST["description"], $_POST["categorie"], $_POST["image"], $_POST["prix"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
 });
 
 //On affiche la confirmation de la suppression
 $app->post('/gestion/suppression', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if($_POST["id"]!=NULL){
-        $success = $controlGestion->supressionPrestation($_POST["id"]);
-    }
+        if ($_POST["id"] != NULL) {
+            $success = $controlGestion->supressionPrestation($_POST["id"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
 });
 
 //On affiche la confirmation de l'activation/désactivation d'une prestation
 $app->post('/gestion/suspenssion', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if((isset($_POST["id"]))){
-        $success = $controlGestion->suspenssionPrestation($_POST["id"]);
-    }
+        if ((isset($_POST["id"]))) {
+            $success = $controlGestion->suspenssionPrestation($_POST["id"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
 });
 
