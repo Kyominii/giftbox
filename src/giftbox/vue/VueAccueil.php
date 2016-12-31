@@ -2,6 +2,8 @@
 
 namespace giftbox\vue;
 
+use giftbox\controleur\ControleurPanier;
+
 class VueAccueil
 {
     private $selecteur;
@@ -11,26 +13,28 @@ class VueAccueil
         $this->selecteur = $sel;
     }
 
-    public function user(){
+    public function admin($nbPrestation){
         $html =  "<div class=\"right item\">
-                  <a class=\"ui inverted button\" href=\"/deconnexion\">Déconnexion</a>
-                </div>";
-        return $html;
-    }
-
-    public function admin(){
-        $html =  "<div class=\"right item\">
+                  <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
+                  <a class=\"ui inverted button\" href=\"/panier\">
+                  <i class=\"icon gift\"></i>Panier
+                  <div class=\"floating ui red circular label\">$nbPrestation</div>
+                  </a>
                   <a class=\"ui inverted button\" href=\"/deconnexion\">Déconnexion</a>
                   <a class=\"ui inverted button\" href=\"/gestion\">Gestion</a>
                 </div>";
         return $html;
     }
 
-    public function visiteur(){
+    public function visiteur($nbPrestation){
        $html =  "<div class=\"right item\">
-                  <a class=\"ui inverted button\" href=\"/connexion\">Connexion</a>
-                  <a class=\"ui inverted button\">Inscription</a>
-                </div>";
+                      <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
+                      <a class=\"ui inverted button\" href=\"/panier\">
+                        <i class=\"icon gift\"></i>Panier
+                        <div class=\"floating ui red circular label\">$nbPrestation</div>
+                      </a>
+                      <a class=\"ui inverted button\" href=\"/connexion\">Connexion</a>
+                 </div>";
        return $html;
     }
 
@@ -70,13 +74,10 @@ class VueAccueil
 
         switch ($this->selecteur){
             case "1":
-                $menu = $this->admin();
-                break;
-            case "0":
-                $menu = $this->user();
+                $menu = $this->admin(ControleurPanier::getAmountInBasket());
                 break;
             default :
-                $menu = $this->visiteur();
+                $menu = $this->visiteur(ControleurPanier::getAmountInBasket());
                 break;
         }
 
@@ -93,7 +94,7 @@ class VueAccueil
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         
           <!-- Site Properties -->
-          <title>Homepage - Semantic</title>
+          <title>Accueil | Giftbox</title>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
         
           <style type="text/css">

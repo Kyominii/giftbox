@@ -141,13 +141,16 @@ class ControleurPanier
             }
         }
 
-        $vue = new VuePanier([$data, $this->isValid()]);
+        $isBasketLoaded = isset($_SESSION['basketLoaded']) ? true : false;
+
+        $vue = new VuePanier([$data, $this->isValid(), $isBasketLoaded]);
 
         //On retourne le code HTML généré par la vue
         return $vue->render("PREVIEW");
     }
 
     public function renderSummaryBasket($nom, $prenom, $numRue, $nomRue, $ville, $cp, $email, $pays, $msg, $paiement){
+
         $data['nom'] = $nom;
         $data['prenom'] = $prenom;
         $data['numRue'] = $numRue;
@@ -173,33 +176,67 @@ class ControleurPanier
         return $vue->render("RECAPITULATIF");
     }
 
-    public function confirmBasket($nom, $prenom, $numRue, $nomRue, $ville, $cp, $email, $pays, $msg, $paiement){
+    public function renderSummaryLoadedBasket(){
 
-        $client = models\Client::where('nom', '=', $nom)
-            ->where('prenom', '=', $prenom)
-            ->first();
+        $coffret = models\Coffret::where('id', '=', $_SESSION['basketLoaded'])->first();
 
+        $data['nom'] = $coffret->client->nom;
+        $data['prenom'] = $coffret->client->prenom;
+        $data['numRue'] = $coffret->client->numAdresse;
+        $data['nomRue'] = $coffret->client->nomAdresse;
+        $data['ville'] = $coffret->client->ville;
+        $data['cp'] = $coffret->client->codePostal;
+        $data['email'] = $coffret->client->email;
+        $data['pays'] = $coffret->client->pays;
+        $data['msg'] = $coffret->message;
+        $data['paiement'] = $coffret->paiement;
+        $data['panier'] = array();
 
+        foreach ($_SESSION['basket'] as $id => $amount) {
 
-        if(!$client){
-            $client = new models\Client();
-            $client->nom = $nom;
-            $client->prenom = $prenom;
-            $client->numAdresse = $numRue;
-            $client->nomAdresse = $nomRue;
-            $client->ville = $ville;
-            $client->codePostal = $cp;
-            $client->email = $email;
-            $client->pays = $pays;
-            $client->save();
+            $prestation = models\Prestation::select('id','nom','descr','cat_id','img','prix')
+                ->where('id','=',$id)
+                ->first();
+
+            array_push($data['panier'], [$prestation, $amount]);
         }
 
-        $coffret = new models\Coffret();
-        $coffret->date_creation = date('Y-m-d');
-        $coffret->paiement = $paiement;
-        $coffret->id_cli = $client->id;
-        $coffret->message = $msg;
-        $coffret->save();
+        $vue = new VuePanier($data);
+        return $vue->render("RECAPITULATIF");
+    }
+
+    public function confirmBasket($nom, $prenom, $numRue, $nomRue, $ville, $cp, $email, $pays, $msg, $paiement, $sauvegarde, $password){
+
+        if(!isset($_SESSION['basketLoaded'])) {
+
+            $client = models\Client::where('nom', '=', $nom)
+                ->where('prenom', '=', $prenom)
+                ->first();
+
+            if (!$client) {
+                $client = new models\Client();
+                $client->nom = $nom;
+                $client->prenom = $prenom;
+                $client->numAdresse = $numRue;
+                $client->nomAdresse = $nomRue;
+                $client->ville = $ville;
+                $client->codePostal = $cp;
+                $client->email = $email;
+                $client->pays = $pays;
+                $client->save();
+            }
+
+            $coffret = new models\Coffret();
+            $coffret->date_creation = date('Y-m-d');
+            $coffret->paiement = $paiement;
+            $coffret->id_cli = $client->id;
+            $coffret->message = $msg;
+            $coffret->save();
+
+        } else {
+            models\Contient::where('id_coffret', '=', $_SESSION['basketLoaded'])->delete();
+            $coffret = models\Coffret::where('id', '=', $_SESSION['basketLoaded'])->first();
+        }
 
         foreach ($_SESSION['basket'] as $id => $amount) {
 
@@ -210,17 +247,34 @@ class ControleurPanier
             $contient->save();
         }
 
-        unset($_SESSION['basket']);
+        if ($sauvegarde != "true") {
 
-        $_SESSION['purchaseInProgress'] = $coffret->id;
+            $_SESSION['purchaseInProgress'] = $coffret->id;
+            $vue = new VuePanier(null);
 
-        $vue = new VuePanier(null);
-
-        if($paiement == "Classique"){
-            $html = $vue->render("PAY_CLASSIC");
+            if ($paiement == "Classique") {
+                $html = $vue->render("PAY_CLASSIC");
+            } else {
+                $html = $vue->render("PAY_POOL");
+            }
         } else {
-            $html = $vue->render("PAY_POOL");
+
+            if($password != ""){
+                $coffret->motdepasse = crypt($password, "IlOvEsEcUrItY<3");
+                $coffret->save();
+            }
+
+            if(!isset($_SESSION['basketLoaded'])) {
+
+                $coffret->slug = uniqid("ges", true);
+                $coffret->save();
+                $_SESSION['basketLoaded'] = $coffret->id;
+            }
+
+            $vue = new VuePanier($coffret);
+            $html = $vue->render("SAVE");
         }
+
 
         return $html;
     }
@@ -229,17 +283,56 @@ class ControleurPanier
 
         $idCoffret = $_SESSION['purchaseInProgress'];
         unset($_SESSION['purchaseInProgress']);
+        unset($_SESSION['basket']);
+        if(isset($_SESSION['basketLoaded']))
+            unset($_SESSION['basketLoaded']);
 
         $coffret = models\Coffret::where('id', '=', $idCoffret)->first();
         $coffret->date_paiement = date('Y-m-d');
-        $coffret->slug = uniqid("giftbox", true);
+        $coffret->slug = "";
         $coffret->save();
 
-        $client = models\Client::where('id', '=', $coffret->id_cli)->first();
-
-        $mail = "Voici votre lien de gestion http://giftbox.localhost/coffret/$coffret->slug";
-
-        $vue = new VuePanier([$idCoffret, $coffret->slug]);
+        $vue = new VuePanier(null);
         return $vue->render("FINISH");
+    }
+
+    public function askPassSlug($slug = ""){
+        $vue = new VuePanier($slug);
+        $html = $vue->render("ASK_PASS_BASKET");
+        return $html;
+    }
+
+    public function loadBasket($slug, $password){
+
+        $coffret = models\Coffret::where('slug', '=', $slug)->first();
+
+        if(!is_null($coffret) && (crypt($password, "IlOvEsEcUrItY<3") == $coffret->motdepasse || is_null($coffret->motdepasse))){
+
+            if(!empty($coffret)){
+
+                unset($_SESSION['basket']);
+
+                foreach ($coffret->prestations as $prestation){
+                    for($i=0; $i < $prestation->nb_prestation; $i++){
+                        $this->addBasket(models\Prestation::where('id', '=', $prestation->id_prestation)->first()->id);
+                    }
+                }
+                $_SESSION['basketLoaded'] = $coffret->id;
+            }
+
+            $data['slug'] = $slug;
+            $data['success'] = empty($coffret) ? false : true;
+
+            $vue = new VuePanier($data);
+            $html = $vue->render("LOADED_BASKET");
+            return $html;
+        } else {
+
+            $vue = new VuePanier(null);
+            $html = $vue->render("FAIL_LOADED_BASKET");
+            return $html;
+        }
+        
+
     }
 }

@@ -112,6 +112,32 @@ $app->get('/panier', function(){
     echo $controlBaskel->renderBasket();
 });
 
+$app->get('/panier/charger', function(){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->askPassSlug();
+});
+
+$app->post('/panier/charger', function(){
+    if(isset($_POST['slug']) && isset($_POST['motdepasse'])){
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+    }
+});
+
+$app->get('/panier/charger/:slug', function($slug){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->askPassSlug($slug);
+});
+
+$app->post('/panier/charger/:slug', function($slug){
+    if(isset($_POST['motdepasse'])){
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
+    } else {
+        echo "fucked up";
+    }
+});
+
 //Connexion
 $app->get('/connexion', function(){
     $vueConnexion = new \giftbox\vue\VueConnexion("Connexion");
@@ -142,21 +168,27 @@ $app->get('/deconnexion', function() {
 });
 
 $app->post('/post/checkout/step1', function(){
-    if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
-        if($_POST['client_nom'] != "" && $_POST['client_prenom'] != "" && $_POST['client_numero_rue'] != "" && $_POST['client_rue'] != "" && $_POST['client_ville'] != "" && $_POST['client_codePostal'] != "" && $_POST['client_email'] != "" && $_POST['client_pays'] != "" && $_POST['coffret_msg'] != "" && $_POST['coffret_moyen_paiement'] != ""){
+    if(!isset($_SESSION['basketLoaded'])){
+        if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
+            if($_POST['client_nom'] != "" && $_POST['client_prenom'] != "" && $_POST['client_numero_rue'] != "" && $_POST['client_rue'] != "" && $_POST['client_ville'] != "" && $_POST['client_codePostal'] != "" && $_POST['client_email'] != "" && $_POST['client_pays'] != "" && $_POST['coffret_msg'] != "" && $_POST['coffret_moyen_paiement'] != ""){
 
-            $controlBaskel = new controleur\ControleurPanier();
-            echo $controlBaskel->renderSummaryBasket($_POST['client_nom'], $_POST['client_prenom'], $_POST['client_numero_rue'], $_POST['client_rue'], $_POST['client_ville'], $_POST['client_codePostal'], $_POST['client_email'], $_POST['client_pays'], $_POST['coffret_msg'], $_POST['coffret_moyen_paiement']);
+                $controlBaskel = new controleur\ControleurPanier();
+                echo $controlBaskel->renderSummaryBasket($_POST['client_nom'], $_POST['client_prenom'], $_POST['client_numero_rue'], $_POST['client_rue'], $_POST['client_ville'], $_POST['client_codePostal'], $_POST['client_email'], $_POST['client_pays'], $_POST['coffret_msg'], $_POST['coffret_moyen_paiement']);
+            }
         }
+    } else {
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->renderSummaryLoadedBasket();
     }
+
 });
 
 $app->post('/post/checkout/step2', function(){
-    if(isset($_POST['nom_cli']) && isset($_POST['prenom_cli']) && isset($_POST['num_rue_cli']) && isset($_POST['nom_rue_cli']) && isset($_POST['ville_cli']) && isset($_POST['cp_cli']) && isset($_POST['email_cli']) && isset($_POST['pays_cli']) && isset($_POST['msg_coffret']) && isset($_POST['paiement_coffret'])){
-        if($_POST['nom_cli'] != "" && $_POST['prenom_cli'] != "" && $_POST['num_rue_cli'] != "" && $_POST['nom_rue_cli'] != "" && $_POST['ville_cli'] != "" && $_POST['cp_cli'] != "" && $_POST['email_cli'] != "" && $_POST['pays_cli'] != "" && $_POST['msg_coffret'] != "" && $_POST['paiement_coffret'] != ""){
+    if(isset($_POST['nom_cli']) && isset($_POST['prenom_cli']) && isset($_POST['num_rue_cli']) && isset($_POST['nom_rue_cli']) && isset($_POST['ville_cli']) && isset($_POST['cp_cli']) && isset($_POST['email_cli']) && isset($_POST['pays_cli']) && isset($_POST['msg_coffret']) && isset($_POST['paiement_coffret']) && isset($_POST['sauvegarder_coffret']) && isset($_POST['mdp_coffret'])) {
+        if ($_POST['nom_cli'] != "" && $_POST['prenom_cli'] != "" && $_POST['num_rue_cli'] != "" && $_POST['nom_rue_cli'] != "" && $_POST['ville_cli'] != "" && $_POST['cp_cli'] != "" && $_POST['email_cli'] != "" && $_POST['pays_cli'] != "" && $_POST['msg_coffret'] != "" && $_POST['paiement_coffret'] != "" && $_POST['sauvegarder_coffret'] != "") {
 
             $controlBaskel = new controleur\ControleurPanier();
-            echo $controlBaskel->confirmBasket($_POST['nom_cli'], $_POST['prenom_cli'], $_POST['num_rue_cli'], $_POST['nom_rue_cli'], $_POST['ville_cli'], $_POST['cp_cli'], $_POST['email_cli'], $_POST['pays_cli'], $_POST['msg_coffret'], $_POST['paiement_coffret']);
+            echo $controlBaskel->confirmBasket($_POST['nom_cli'], $_POST['prenom_cli'], $_POST['num_rue_cli'], $_POST['nom_rue_cli'], $_POST['ville_cli'], $_POST['cp_cli'], $_POST['email_cli'], $_POST['pays_cli'], $_POST['msg_coffret'], $_POST['paiement_coffret'], $_POST['sauvegarder_coffret'], $_POST['mdp_coffret']);
         }
     }
 });
@@ -178,63 +210,81 @@ $app->get('/coffret/:slug', function($slug){
 
 //On affiche le menu de gestion
 $app->get('/gestion', function(){
-    $vueGestion = new \giftbox\vue\VueGestion("gestion");
-    echo $vueGestion->render();
+    if($_SESSION['connecte'] == 1){
+        $vueGestion = new \giftbox\vue\VueGestion("gestion");
+        echo $vueGestion->render();
+    }
+
 });
 
 
 //On affiche la confirmation de l'ajout
 $app->post('/gestion/ajout', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if(($_POST["nom"] != NULL)&&($_POST["description"] != NULL)&&($_POST["categorie"]!= NULL)&&($_POST["image"] != NULL)&&($_POST["prix"] != NULL)){
-        $success = $controlGestion->ajoutPrestation($_POST["nom"],$_POST["description"],$_POST["categorie"],$_POST["image"],$_POST["prix"]);
-    }
+        if (($_POST["nom"] != NULL) && ($_POST["description"] != NULL) && ($_POST["categorie"] != NULL) && ($_POST["image"] != NULL) && ($_POST["prix"] != NULL)) {
+            $success = $controlGestion->ajoutPrestation($_POST["nom"], $_POST["description"], $_POST["categorie"], $_POST["image"], $_POST["prix"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
 });
 
 //On affiche la confirmation de la suppression
 $app->post('/gestion/suppression', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if($_POST["id"]!=NULL){
-        $success = $controlGestion->supressionPrestation($_POST["id"]);
-    }
+        if ($_POST["id"] != NULL) {
+            $success = $controlGestion->supressionPrestation($_POST["id"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
 });
 
 //On affiche la confirmation de l'activation/désactivation d'une prestation
 $app->post('/gestion/suspenssion', function(){
-    $controlGestion = new controleur\ControleurGestionnaire();
-    $success = false;
+    if($_SESSION['connecte'] == 1) {
+        $controlGestion = new controleur\ControleurGestionnaire();
+        $success = false;
 
-    if((isset($_POST["id"]))){
-        $success = $controlGestion->suspenssionPrestation($_POST["id"]);
-    }
+        if ((isset($_POST["id"]))) {
+            $success = $controlGestion->suspenssionPrestation($_POST["id"]);
+        }
 
-    if($success == true) {
-        $vueGestion = new \giftbox\vue\VueGestion("confirmation");
-        echo $vueGestion->render();
-    }else{
-        $vueGestion = new \giftbox\vue\VueGestion("echec");
-        echo $vueGestion->render();
+        if ($success == true) {
+            $vueGestion = new \giftbox\vue\VueGestion("confirmation");
+            echo $vueGestion->render();
+        } else {
+            $vueGestion = new \giftbox\vue\VueGestion("echec");
+            echo $vueGestion->render();
+        }
     }
+});
+
+$app->get('/hash/:mdp', function($mdp){
+   echo crypt($mdp, "giftboxSalt_betterSecurity");
+});
+
+$app->get('/reset', function(){
+   unset($_SESSION['basket']);
+   unset($_SESSION['basketLoaded']);
 });
 
 //Lancement du micro-framework
