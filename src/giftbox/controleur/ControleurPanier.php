@@ -238,7 +238,6 @@ class ControleurPanier
         $client = models\Client::where('id', '=', $coffret->id_cli)->first();
 
         $mail = "Voici votre lien de gestion http://giftbox.localhost/coffret/$coffret->slug";
-        mail($client->email, "Lien de gestion Giftbox", $mail);
 
         $vue = new VuePanier([$idCoffret, $coffret->slug]);
         return $vue->render("FINISH");
