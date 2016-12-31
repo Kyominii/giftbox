@@ -15,7 +15,7 @@ class VueAccueil
 
     public function admin($nbPrestation){
         $html =  "<div class=\"right item\">
-                  <a class=\"ui inverted button\" style=\"margin-right: 7px\">Gérer un coffret</a>
+                  <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
                   <a class=\"ui inverted button\" href=\"/panier\">
                   <i class=\"icon gift\"></i>Panier
                   <div class=\"floating ui red circular label\">$nbPrestation</div>
@@ -28,7 +28,7 @@ class VueAccueil
 
     public function visiteur($nbPrestation){
        $html =  "<div class=\"right item\">
-                      <a class=\"ui inverted button\" style=\"margin-right: 7px\">Gérer un coffret</a>
+                      <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
                       <a class=\"ui inverted button\" href=\"/panier\">
                         <i class=\"icon gift\"></i>Panier
                         <div class=\"floating ui red circular label\">$nbPrestation</div>

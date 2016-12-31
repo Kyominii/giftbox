@@ -47,7 +47,7 @@ class Header
         if($_SESSION['connecte'] != 1){
 
             $html = $html . "
-                          <a class=\"ui inverted button\" style=\"margin-right: 7px\">Gérer un coffret</a>
+                          <a class=\"ui inverted button\" href=\"/panier/charger\" style=\"margin-right: 7px\">Gérer un coffret</a>
                           <a class=\"ui inverted button\" href=\"/panier\" style=\"margin-right: 7px\">
                             <i class=\"icon gift\"></i>Panier
                             <div class=\"floating ui red circular label\">$nbPrestation</div>

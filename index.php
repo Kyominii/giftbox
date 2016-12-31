@@ -112,6 +112,32 @@ $app->get('/panier', function(){
     echo $controlBaskel->renderBasket();
 });
 
+$app->get('/panier/charger', function(){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->askPassSlug();
+});
+
+$app->post('/panier/charger', function(){
+    if(isset($_POST['slug']) && isset($_POST['motdepasse'])){
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+    }
+});
+
+$app->get('/panier/charger/:slug', function($slug){
+    $controlBaskel = new controleur\ControleurPanier();
+    echo $controlBaskel->askPassSlug($slug);
+});
+
+$app->post('/panier/charger/:slug', function($slug){
+    if(isset($_POST['motdepasse'])){
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
+    } else {
+        echo "fucked up";
+    }
+});
+
 //Connexion
 $app->get('/connexion', function(){
     $vueConnexion = new \giftbox\vue\VueConnexion("Connexion");
@@ -142,21 +168,27 @@ $app->get('/deconnexion', function() {
 });
 
 $app->post('/post/checkout/step1', function(){
-    if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
-        if($_POST['client_nom'] != "" && $_POST['client_prenom'] != "" && $_POST['client_numero_rue'] != "" && $_POST['client_rue'] != "" && $_POST['client_ville'] != "" && $_POST['client_codePostal'] != "" && $_POST['client_email'] != "" && $_POST['client_pays'] != "" && $_POST['coffret_msg'] != "" && $_POST['coffret_moyen_paiement'] != ""){
+    if(!isset($_SESSION['basketLoaded'])){
+        if(isset($_POST['client_nom']) && isset($_POST['client_prenom']) && isset($_POST['client_numero_rue']) && isset($_POST['client_rue']) && isset($_POST['client_ville']) && isset($_POST['client_codePostal']) && isset($_POST['client_email']) && isset($_POST['client_pays']) && isset($_POST['coffret_msg']) && isset($_POST['coffret_moyen_paiement'])){
+            if($_POST['client_nom'] != "" && $_POST['client_prenom'] != "" && $_POST['client_numero_rue'] != "" && $_POST['client_rue'] != "" && $_POST['client_ville'] != "" && $_POST['client_codePostal'] != "" && $_POST['client_email'] != "" && $_POST['client_pays'] != "" && $_POST['coffret_msg'] != "" && $_POST['coffret_moyen_paiement'] != ""){
 
-            $controlBaskel = new controleur\ControleurPanier();
-            echo $controlBaskel->renderSummaryBasket($_POST['client_nom'], $_POST['client_prenom'], $_POST['client_numero_rue'], $_POST['client_rue'], $_POST['client_ville'], $_POST['client_codePostal'], $_POST['client_email'], $_POST['client_pays'], $_POST['coffret_msg'], $_POST['coffret_moyen_paiement']);
+                $controlBaskel = new controleur\ControleurPanier();
+                echo $controlBaskel->renderSummaryBasket($_POST['client_nom'], $_POST['client_prenom'], $_POST['client_numero_rue'], $_POST['client_rue'], $_POST['client_ville'], $_POST['client_codePostal'], $_POST['client_email'], $_POST['client_pays'], $_POST['coffret_msg'], $_POST['coffret_moyen_paiement']);
+            }
         }
+    } else {
+        $controlBaskel = new controleur\ControleurPanier();
+        echo $controlBaskel->renderSummaryLoadedBasket();
     }
+
 });
 
 $app->post('/post/checkout/step2', function(){
-    if(isset($_POST['nom_cli']) && isset($_POST['prenom_cli']) && isset($_POST['num_rue_cli']) && isset($_POST['nom_rue_cli']) && isset($_POST['ville_cli']) && isset($_POST['cp_cli']) && isset($_POST['email_cli']) && isset($_POST['pays_cli']) && isset($_POST['msg_coffret']) && isset($_POST['paiement_coffret'])){
-        if($_POST['nom_cli'] != "" && $_POST['prenom_cli'] != "" && $_POST['num_rue_cli'] != "" && $_POST['nom_rue_cli'] != "" && $_POST['ville_cli'] != "" && $_POST['cp_cli'] != "" && $_POST['email_cli'] != "" && $_POST['pays_cli'] != "" && $_POST['msg_coffret'] != "" && $_POST['paiement_coffret'] != ""){
+    if(isset($_POST['nom_cli']) && isset($_POST['prenom_cli']) && isset($_POST['num_rue_cli']) && isset($_POST['nom_rue_cli']) && isset($_POST['ville_cli']) && isset($_POST['cp_cli']) && isset($_POST['email_cli']) && isset($_POST['pays_cli']) && isset($_POST['msg_coffret']) && isset($_POST['paiement_coffret']) && isset($_POST['sauvegarder_coffret']) && isset($_POST['mdp_coffret'])) {
+        if ($_POST['nom_cli'] != "" && $_POST['prenom_cli'] != "" && $_POST['num_rue_cli'] != "" && $_POST['nom_rue_cli'] != "" && $_POST['ville_cli'] != "" && $_POST['cp_cli'] != "" && $_POST['email_cli'] != "" && $_POST['pays_cli'] != "" && $_POST['msg_coffret'] != "" && $_POST['paiement_coffret'] != "" && $_POST['sauvegarder_coffret'] != "") {
 
             $controlBaskel = new controleur\ControleurPanier();
-            echo $controlBaskel->confirmBasket($_POST['nom_cli'], $_POST['prenom_cli'], $_POST['num_rue_cli'], $_POST['nom_rue_cli'], $_POST['ville_cli'], $_POST['cp_cli'], $_POST['email_cli'], $_POST['pays_cli'], $_POST['msg_coffret'], $_POST['paiement_coffret']);
+            echo $controlBaskel->confirmBasket($_POST['nom_cli'], $_POST['prenom_cli'], $_POST['num_rue_cli'], $_POST['nom_rue_cli'], $_POST['ville_cli'], $_POST['cp_cli'], $_POST['email_cli'], $_POST['pays_cli'], $_POST['msg_coffret'], $_POST['paiement_coffret'], $_POST['sauvegarder_coffret'], $_POST['mdp_coffret']);
         }
     }
 });
@@ -248,6 +280,11 @@ $app->post('/gestion/suspenssion', function(){
 
 $app->get('/hash/:mdp', function($mdp){
    echo crypt($mdp, "giftboxSalt_betterSecurity");
+});
+
+$app->get('/reset', function(){
+   unset($_SESSION['basket']);
+   unset($_SESSION['basketLoaded']);
 });
 
 //Lancement du micro-framework
