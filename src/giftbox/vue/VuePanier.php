@@ -1,15 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Teddy
- * Date: 26/12/2016
- * Time: 18:00
- */
 
 namespace giftbox\vue;
-
-
-use giftbox\controleur\ControleurPanier;
 
 class VuePanier
 {
@@ -20,19 +11,21 @@ class VuePanier
         $this->pbc = $fromController;
     }
 
-    private function htmlEmptyBasket(){
-
-        $html = "<h1>Aucun article n'a été ajouté au panier, veuillez séléctionner des articles pour continuer !</h1>
-                 <a class=\"ui huge button\" href=\"/catalogue\">Retour<i class=\"right arrow icon\"></i></a>";
-
-        return $html;
-    }
-
-    private function htmlFilledBasket(){
+    private function htmlBasket(){
 
         $totalPrix = 0;
+        $html = "";
 
-        $html = "<div class=\"ui middle aligned divided list\">";
+        if($this->pbc[2] != -1){
+            $html = "<div class=\"ui message\">
+                          <div class=\"header\">
+                            Panier chargé
+                          </div>
+                          <p>Le panier #" . $this->pbc[2] . " est actuellement chargé, cliquez sur ce cadre pour retirer le lien de chargement (vous garderez les prestations dans votre panier mais vos informations vous seront redemandé lors de la poursuite).</p>
+                     </div>";
+        }
+
+        $html = $html . "<div class=\"ui middle aligned divided list\">";
         foreach ($this->pbc[0] as $id => $data){
 
             $sousTotal = $data[0]->prix * $data[1];
@@ -55,10 +48,10 @@ class VuePanier
 
         if($this->pbc[1]) {
 
-            if ($this->pbc[2]) {
+            if ($this->pbc[2] != -1) {
 
                 $html = $html . "<form id=\"uselessForm\" method=\"post\" action=\"/post/checkout/step1\"></form>
-                                 <button id=\"submitButton\" class=\"ui positive basic button\">Passer la commande</button>
+                                 <button id=\"submitButton\" class=\"ui positive basic button\">Continuer</button>                                
                                  <script>
                                     $(\"#submitButton\").click(function(){
                                         $(\"#uselessForm\").form('submit');
@@ -402,7 +395,7 @@ class VuePanier
                                         </div>
                                       </div>
                                  </div>
-                                 <button id=\"modalButton\" class=\"ui positive basic button\">Passer la commande</button>
+                                 <button id=\"modalButton\" class=\"ui positive basic button\">Continuer</button>
                                  <script>
                                  
                                  $('#infos_client')
@@ -517,7 +510,7 @@ class VuePanier
 
         } else {
 
-            $html = $html . "<button class=\"ui negative basic button\" data-content=\"Pour passer commande, vous devez avoir au moins 1 article de 2 catégories différentes\" data-variation=\"wide\" data-position=\"bottom center\">Passer la commande</button>
+            $html = $html . "<button class=\"ui negative basic button\" data-content=\"Pour continuer, vous devez avoir au moins 1 article de 2 catégories différentes\" data-variation=\"wide\" data-position=\"bottom center\">Continuer</button>
                              <script>$('.ui.button').popup();</script>";
         }
 
@@ -901,107 +894,6 @@ class VuePanier
         return $html;
     }
 
-    public function htmlSaveBasket(){
-
-        $html = "<div class=\"ui positive message\">
-                  <i class=\"close icon\"></i>
-                  <div class=\"header\">
-                    Succès
-                  </div>
-                  Vous pouvez chargé votre panier avec cet ID : " . $this->pbc->slug . " dans le menu \"Gérer un coffret\" ou bien <a href='/panier/charger/" . $this->pbc->slug . "'>utiliser cette adresse</a>
-                </div>
-                <script>
-                
-                $('.message .close')
-                  .on('click', function() {
-                    $(this)
-                      .closest('.message')
-                      .transition('fade')
-                    ;
-                  })
-                ;
-                </script>";
-
-        $html = $html . $this->htmlCredentialBasket();
-
-        return $html;
-    }
-
-    public function htmlLoadingBasket(){
-
-        if($this->pbc['success']){
-            $html = "<div class=\"ui positive message\">
-                  <i class=\"close icon\"></i>
-                  <div class=\"header\">
-                    Succès
-                  </div>
-                  Votre coffret a été chargé avec succès !
-                </div>
-                <script>
-                
-                $('.message .close')
-                  .on('click', function() {
-                    $(this)
-                      .closest('.message')
-                      .transition('fade')
-                    ;
-                  })
-                ;
-                </script>";
-
-            $html = $html . $this->htmlCredentialBasket();
-        } else {
-
-            $html = "<div class=\"ui negative message\">
-                  <i class=\"close icon\"></i>
-                  <div class=\"header\">
-                    Erreur !
-                  </div>
-                  Le panier #". $this->pbc['slug'] . " est introuvable et n'a pas été chargé en conséquent !
-                </div>
-                <script>
-                
-                $('.message .close')
-                  .on('click', function() {
-                    $(this)
-                      .closest('.message')
-                      .transition('fade')
-                    ;
-                  })
-                ;
-                </script>";
-
-            $html = $html . $this->htmlCredentialBasket();
-        }
-
-        return $html;
-    }
-
-    public function htmlFailLoadingBasket(){
-        $html = "<div class=\"ui negative message\">
-                  <i class=\"close icon\"></i>
-                  <div class=\"header\">
-                    Erreur !
-                  </div>
-                  Veuillez vérifier votre ID coffret ainsi que votre mot de passe associé.
-                </div>
-                <script>
-                
-                $('.message .close')
-                  .on('click', function() {
-                    $(this)
-                      .closest('.message')
-                      .transition('fade')
-                    ;
-                  })
-                ;
-                </script>";
-
-        $html = $html . $this->htmlCredentialBasket();
-
-        return $html;
-    }
-
     public function htmlCredentialBasket(){
 
         if(is_string($this->pbc) && $this->pbc != ""){
@@ -1044,15 +936,7 @@ class VuePanier
                 break;
             case "PREVIEW":
                 $html = Header::getHeader("Panier | Giftbox");
-                if(count($this->pbc[0]) != 0){
-                    $html = $html . $this->htmlFilledBasket();
-                } else {
-                    $html = $html . $this->htmlEmptyBasket();
-                }
-                break;
-            case "SAVE":
-                $html = Header::getHeader("Sauvegarde | Giftbox");
-                $html = $html . $this->htmlSaveBasket();
+                $html = $html . $this->htmlBasket();
                 break;
             case "PAY_CLASSIC":
                 $html = Header::getHeader("Paiement | Giftbox");
@@ -1066,17 +950,9 @@ class VuePanier
                 $html = Header::getHeader("Finalisation | Giftbox");
                 $html = $html . $this->htmlFinish();
                 break;
-            case "LOADED_BASKET":
-                $html = Header::getHeader("Chargement panier | Giftbox");
-                $html = $html . $this->htmlLoadingBasket();
-                break;
             case "ASK_PASS_BASKET":
                 $html = Header::getHeader("Chargement panier | Giftbox");
                 $html = $html . $this->htmlCredentialBasket();
-                break;
-            case "FAIL_LOADED_BASKET":
-                $html = Header::getHeader("Chargement panier échouée | Giftbox");
-                $html = $html . $this->htmlFailLoadingBasket();
                 break;
             default:
                 $html = Header::getHeader("Panier | Giftbox");

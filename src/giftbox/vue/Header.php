@@ -71,7 +71,28 @@ class Header
   
                 <div class=\"ui container\" style=\"width: 80%; padding-top: 30px\">";
 
+        if(isset($_SESSION['message'])){
+            $html = $html . "<div class=\"ui " . $_SESSION['message']['type'] . " message\">
+                              <i class=\"close icon\"></i>
+                              <div class=\"header\">
+                                " . $_SESSION['message']['header'] . "
+                              </div>
+                              " . $_SESSION['message']['content'] . "
+                            </div>
+                            <script>
+                            
+                            $('.message .close')
+                              .on('click', function() {
+                                $(this)
+                                  .closest('.message')
+                                  .transition('fade')
+                                ;
+                              })
+                            ;
+                            </script>";
 
+            unset($_SESSION['message']);
+        }
 
         return $html;
     }

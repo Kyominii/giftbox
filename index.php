@@ -107,9 +107,15 @@ $app->get('/delBasket/:id', function($id) use ($app){
 });
 
 //On affiche le panier
-$app->get('/panier', function(){
+$app->get('/panier', function() use($app){
     $controlBaskel = new controleur\ControleurPanier();
-    echo $controlBaskel->renderBasket();
+    $res = $controlBaskel->renderBasket();
+
+    if($res == "empty"){
+        $app->redirect("/catalogue");
+    } else {
+        echo $res;
+    }
 });
 
 $app->get('/panier/charger', function(){
@@ -117,10 +123,15 @@ $app->get('/panier/charger', function(){
     echo $controlBaskel->askPassSlug();
 });
 
-$app->post('/panier/charger', function(){
+$app->post('/panier/charger', function() use ($app){
     if(isset($_POST['slug']) && isset($_POST['motdepasse'])){
         $controlBaskel = new controleur\ControleurPanier();
-        echo $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+        $res = $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+        if($res == "success"){
+            $app->redirect('/panier');
+        } else {
+            echo $res;
+        }
     }
 });
 
@@ -129,12 +140,15 @@ $app->get('/panier/charger/:slug', function($slug){
     echo $controlBaskel->askPassSlug($slug);
 });
 
-$app->post('/panier/charger/:slug', function($slug){
+$app->post('/panier/charger/:slug', function($slug) use ($app){
     if(isset($_POST['motdepasse'])){
         $controlBaskel = new controleur\ControleurPanier();
-        echo $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
-    } else {
-        echo "fucked up";
+        $res = $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
+        if($res == "success"){
+            $app->redirect('/panier');
+        } else {
+            echo $res;
+        }
     }
 });
 
