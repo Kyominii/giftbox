@@ -232,7 +232,7 @@ $app->get('/gestion', function(){
         $vueGestion = new \giftbox\vue\VueGestion("gestion");
         echo $vueGestion->render();
     }catch(Exception $e){
-        var_dump($e);
+        echo "Permission refusée";
     }
 
 });

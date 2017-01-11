@@ -56,7 +56,8 @@ class Authenticate {
 
     public static function checkAcessRights($required){
             if(isset($_SESSION['profil'])){
-                if($required != $_SESSION['profil']->grade){
+                if($required != $_SESSION['profil']['grade']){
+
                     echo "b";
                     throw new \Exception();
                 }
