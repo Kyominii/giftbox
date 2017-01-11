@@ -37,7 +37,7 @@ class Authenticate {
         $user = models\Utilisateur::where('pseudo','like',$username)
                                     ->first();
         if($user != null){
-            if(password_hash($pass, PASSWORD_BCRYPT) == $user->mdp){
+            if(password_verify($pass, $user->mdp)){
                 Authenticate::loadProfile($user);
             }
         }
@@ -52,6 +52,19 @@ class Authenticate {
         'grade' => $user->grade);
 
         $_SESSION['profil'] = $tab;
+    }
+
+    public static function checkAcessRights($required){
+            if(isset($_SESSION['profil'])){
+                if($required != $_SESSION['profil']->grade){
+                    echo "b";
+                    throw new \Exception();
+                }
+            }else{
+                echo "a";
+                throw new \Exception();
+            }
+
     }
 
 

@@ -177,6 +177,9 @@ $app->post('/connexion/confirmation', function(){
 //affiche la confirmation de la déconnexion
 $app->get('/deconnexion', function() {
     $_SESSION["connecte"] = -1;
+    if(isset($_SESSION['profil'])){
+        unset($_SESSION['profil']);
+    }
     $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
     echo $vueConnexion->render();
 });
@@ -224,9 +227,12 @@ $app->get('/coffret/:slug', function($slug){
 
 //On affiche le menu de gestion
 $app->get('/gestion', function(){
-    if($_SESSION['connecte'] == 1){
+    try {
+        controleur\Authenticate::checkAcessRights("admin");
         $vueGestion = new \giftbox\vue\VueGestion("gestion");
         echo $vueGestion->render();
+    }catch(Exception $e){
+        var_dump($e);
     }
 
 });
@@ -293,7 +299,9 @@ $app->post('/gestion/suspenssion', function(){
 });
 
 $app->get('/hash/:mdp', function($mdp){
-   echo crypt($mdp, "giftboxSalt_betterSecurity");
+    $hash=password_hash($mdp, PASSWORD_BCRYPT);
+    echo password_verify(123,$hash)."<br>";;
+    echo $hash;
 });
 
 $app->get('/reset', function(){

@@ -136,10 +136,11 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `pseudo`, `mdp`, `grade`) VALUES
-(1, 'teddy', 'giVxuvcRnyOMQ', 'admin'),
-(2, 'alex', 'giGsHwwgaiGyY', 'admin'),
-(3, 'samir', 'gicF4swmvOOjc', 'user'),
-(4, 'elias', 'giCrZE.CVd9Rs', 'user');
+(1, 'teddy', '$2y$10$EeSDa3RSu5G1paYaecXY4OcyOZyWt3Wx4ulvT5Si732uNUl1yKIfm
+', 'admin'),
+(2, 'alex', '$2y$10$kGI3oz.m2muxhD5BFMSbSOy1eGQAJ5YzqGyh2XJXlnbu.6toFfF16', 'admin'),
+(3, 'samir', '$2y$10$uRgT.ozd.EFIs0zOtP.AleeCqhv8eDrgGCNZD0MC9oy/0htvw6fqK', 'user'),
+(4, 'elias', '$2y$10$0G2o5fls9l2Ek46ZKrFlgeqZ0uXTM0jqc5.eyqgXZI0eFS2.9DI5q', 'user');
 
 -- teddy: 123 / alex : 456 / samir : 789 / elias : 111
 
