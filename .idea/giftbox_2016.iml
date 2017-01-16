@@ -5,6 +5,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
+<<<<<<< HEAD
       <library name="PHP Runtime" type="php">
         <CLASSES>
           <root url="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/stubs/standard" />
@@ -15,6 +16,8 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+=======
+>>>>>>> 804948019e8b018ba2235013caf94d9d7ac3a56c
       <library name="PHARS">
         <CLASSES>
           <root url="phar://$MODULE_DIR$/composer.phar/" />

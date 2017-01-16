@@ -1,19 +1,88 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Teddy
- * Date: 21/12/2016
- * Time: 18:27
- */
 
 namespace giftbox\vue;
 
+use giftbox\controleur\ControleurPanier;
 
 class VueAccueil
 {
+    private $selecteur;
 
-    public function render()
+    function __construct( $sel)
     {
+        $this->selecteur = $sel;
+    }
+
+    public function admin($nbPrestation){
+        $html =  "<div class=\"right item\">
+                  <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
+                  <a class=\"ui inverted button\" href=\"/panier\">
+                  <i class=\"icon gift\"></i>Panier
+                  <div class=\"floating ui red circular label\">$nbPrestation</div>
+                  </a>
+                  <a class=\"ui inverted button\" href=\"/deconnexion\">Déconnexion</a>
+                  <a class=\"ui inverted button\" href=\"/gestion\">Gestion</a>
+                </div>";
+        return $html;
+    }
+
+    public function visiteur($nbPrestation){
+       $html =  "<div class=\"right item\">
+                      <a class=\"ui inverted button\" href='/panier/charger' style=\"margin-right: 7px\">Gérer un coffret</a>
+                      <a class=\"ui inverted button\" href=\"/panier\">
+                        <i class=\"icon gift\"></i>Panier
+                        <div class=\"floating ui red circular label\">$nbPrestation</div>
+                      </a>
+                      <a class=\"ui inverted button\" href=\"/connexion\">Connexion</a>
+                 </div>";
+       return $html;
+    }
+
+    public function render($listePrest)
+    {
+
+        $BestPrest = "<div class=\"ui vertical stripe segment prest title\">
+                        <div class=\"ui text container\">
+                           <h3 class=\"ui header\">Nos Meilleurs Prestations</h3>
+                        </div>
+                      </div>
+                      
+                      <div class=\"ui vertical stripe quote segment\">
+                        <div class=\"ui equal width stackable internally celled grid\">
+                            <div class=\"center aligned row\">";
+
+        foreach ($listePrest as $prestation){
+            $BestPrest = $BestPrest."<div class=\"column\">
+                                        <h2>$prestation->nom</h2>
+                                        <div class=\"meta\">
+                                            <p class=\"categorie\">" . $prestation->categorie->nom . "</p>
+                                        </div>
+                                        <div class=\"extra content\">
+                                        <span>
+                                            $prestation->prix €
+                                        </span>
+                                        <br>
+                                        <div class=\"ui star rating\" data-rating=\"" . $prestation->moyenne() . "\" data-max-rating=\"5\"></div><br /><br />
+                                        <a class=\"ui large button\" href=\"/catalogue/".$prestation->id."\">Détail</a>
+                                    </div>
+                                    </div>";
+        }
+
+        $BestPrest = $BestPrest."       </div>
+                                    </div>
+                                </div>";
+
+        switch ($this->selecteur){
+            case "1":
+                $menu = $this->admin(ControleurPanier::getAmountInBasket());
+                break;
+            default :
+                $menu = $this->visiteur(ControleurPanier::getAmountInBasket());
+                break;
+        }
+
+
+
         $html = <<<END
         
         <!DOCTYPE html>
@@ -25,10 +94,15 @@ class VueAccueil
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         
           <!-- Site Properties -->
-          <title>Homepage - Semantic</title>
+          <title>Accueil | Giftbox</title>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.css">
         
           <style type="text/css">
+         
+            
+            .prest.title{
+                text-align: center;
+            }
         
             .hidden.menu {
               display: none;
@@ -150,10 +224,7 @@ class VueAccueil
                 </a>
                 <a class="active item" href="#">Accueil</a>
                 <a class="item" href="/catalogue">Catalogue</a>
-                <div class="right item">
-                  <a class="ui inverted button">Connexion</a>
-                  <a class="ui inverted button">Inscription</a>
-                </div>
+                $menu
               </div>
             </div>
         
@@ -167,6 +238,7 @@ class VueAccueil
         
           </div>
         
+          $BestPrest   
           <div class="ui vertical stripe segment">
             <div class="ui middle aligned stackable grid container">
               <div class="row">
@@ -254,6 +326,7 @@ class VueAccueil
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
           <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
           <script>
+          $('.ui.rating').rating('disable');
           $(document)
             .ready(function() {
         
