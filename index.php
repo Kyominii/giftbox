@@ -107,9 +107,15 @@ $app->get('/delBasket/:id', function($id) use ($app){
 });
 
 //On affiche le panier
-$app->get('/panier', function(){
+$app->get('/panier', function() use($app){
     $controlBaskel = new controleur\ControleurPanier();
-    echo $controlBaskel->renderBasket();
+    $res = $controlBaskel->renderBasket();
+
+    if($res == "empty"){
+        $app->redirect("/catalogue");
+    } else {
+        echo $res;
+    }
 });
 
 $app->get('/panier/charger', function(){
@@ -117,10 +123,15 @@ $app->get('/panier/charger', function(){
     echo $controlBaskel->askPassSlug();
 });
 
-$app->post('/panier/charger', function(){
+$app->post('/panier/charger', function() use ($app){
     if(isset($_POST['slug']) && isset($_POST['motdepasse'])){
         $controlBaskel = new controleur\ControleurPanier();
-        echo $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+        $res = $controlBaskel->loadBasket($_POST['slug'], $_POST['motdepasse']);
+        if($res == "success"){
+            $app->redirect('/panier');
+        } else {
+            echo $res;
+        }
     }
 });
 
@@ -129,12 +140,15 @@ $app->get('/panier/charger/:slug', function($slug){
     echo $controlBaskel->askPassSlug($slug);
 });
 
-$app->post('/panier/charger/:slug', function($slug){
+$app->post('/panier/charger/:slug', function($slug) use ($app){
     if(isset($_POST['motdepasse'])){
         $controlBaskel = new controleur\ControleurPanier();
-        echo $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
-    } else {
-        echo "fucked up";
+        $res = $controlBaskel->loadBasket($slug, $_POST['motdepasse']);
+        if($res == "success"){
+            $app->redirect('/panier');
+        } else {
+            echo $res;
+        }
     }
 });
 
@@ -163,6 +177,9 @@ $app->post('/connexion/confirmation', function(){
 //affiche la confirmation de la déconnexion
 $app->get('/deconnexion', function() {
     $_SESSION["connecte"] = -1;
+    if(isset($_SESSION['profil'])){
+        unset($_SESSION['profil']);
+    }
     $vueConnexion = new \giftbox\vue\VueConnexion("Deconnexion");
     echo $vueConnexion->render();
 });
@@ -210,9 +227,12 @@ $app->get('/coffret/:slug', function($slug){
 
 //On affiche le menu de gestion
 $app->get('/gestion', function(){
-    if($_SESSION['connecte'] == 1){
+    try {
+        controleur\Authenticate::checkAcessRights("admin");
         $vueGestion = new \giftbox\vue\VueGestion("gestion");
         echo $vueGestion->render();
+    }catch(Exception $e){
+        echo "Permission refusée";
     }
 
 });
@@ -279,7 +299,9 @@ $app->post('/gestion/suspenssion', function(){
 });
 
 $app->get('/hash/:mdp', function($mdp){
-   echo crypt($mdp, "giftboxSalt_betterSecurity");
+    $hash=password_hash($mdp, PASSWORD_BCRYPT);
+    echo password_verify(123,$hash)."<br>";;
+    echo $hash;
 });
 
 $app->get('/reset', function(){

@@ -141,7 +141,29 @@ class ControleurPanier
             }
         }
 
-        $isBasketLoaded = isset($_SESSION['basketLoaded']) ? true : false;
+        if(isset($_SESSION['basketLoaded'])){
+
+            $coffret = models\Coffret::where('id', '=', $_SESSION['basketLoaded'])->first();
+
+            if(!empty($coffret)){
+
+                $isBasketLoaded = $coffret->slug;
+            } else {
+
+                $isBasketLoaded = -1;
+            }
+        } else {
+
+            $isBasketLoaded = -1;
+        }
+
+        if(count($data) == 0){
+
+            $_SESSION['message']['type'] = "warning";
+            $_SESSION['message']['content'] = "Aucun article n'a été ajouté au panier.";
+            $_SESSION['message']['header'] = "Attention !";
+            return "empty";
+        }
 
         $vue = new VuePanier([$data, $this->isValid(), $isBasketLoaded]);
 
@@ -271,8 +293,12 @@ class ControleurPanier
                 $_SESSION['basketLoaded'] = $coffret->id;
             }
 
-            $vue = new VuePanier($coffret);
-            $html = $vue->render("SAVE");
+            $_SESSION['message']['type'] = "positive";
+            $_SESSION['message']['content'] = "Vous pouvez chargé votre panier avec cet ID : " . $coffret->slug . " dans le menu \"Gérer un coffret\" ou bien <a href='/panier/charger/" . $coffret->slug . "'>utiliser cette adresse</a>";
+            $_SESSION['message']['header'] = "Succès !";
+
+            $vue = new VuePanier(null);
+            $html = $vue->render("ASK_PASS_BASKET");
         }
 
 
@@ -321,15 +347,21 @@ class ControleurPanier
             }
 
             $data['slug'] = $slug;
-            $data['success'] = empty($coffret) ? false : true;
 
-            $vue = new VuePanier($data);
-            $html = $vue->render("LOADED_BASKET");
-            return $html;
+            $_SESSION['message']['type'] = "positive";
+            $_SESSION['message']['content'] = "Votre coffret a été chargé avec succès !";
+            $_SESSION['message']['header'] = "Succès !";
+
+            return "success";
+
         } else {
 
+            $_SESSION['message']['type'] = "negative";
+            $_SESSION['message']['content'] = "Veuillez vérifier votre ID coffret ainsi que votre mot de passe associé.";
+            $_SESSION['message']['header'] = "Erreur !";
+
             $vue = new VuePanier(null);
-            $html = $vue->render("FAIL_LOADED_BASKET");
+            $html = $vue->render("ASK_PASS_BASKET");
             return $html;
         }
 

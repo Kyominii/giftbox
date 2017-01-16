@@ -158,8 +158,14 @@ class ControleurGestionnaire {
     function connexion($pseudo, $mdp){
         $res = models\Utilisateur::where('pseudo','like',$pseudo)->first();
 
-        if(crypt($mdp, "giftboxSalt_betterSecurity") == $res->mdp){
+        if(count($res) == 0)
+            return false;
+
+        echo password_verify($mdp, $res->mdp);
+
+        if(password_verify($mdp, $res->mdp)){
             if($res != NULL){
+                Authenticate::authenticate($pseudo, $mdp);
                 if($res->grade == 'admin'){
                     $_SESSION["connecte"]=1;
                     return true;
