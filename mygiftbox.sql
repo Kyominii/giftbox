@@ -245,6 +245,23 @@ CREATE TABLE Contient(
   FOREIGN KEY (id_coffret) REFERENCES Coffret(id),
   FOREIGN KEY (id_prestation) REFERENCES prestation(id));
 
+CREATE TABLE Cagnotte(
+  id int auto_increment,
+  id_coffret int,
+  slug text,
+  motdepasse text,
+  primary key(id),
+  foreign key (id_coffret) references Coffret(id));
+
+create table Contribution(
+  id int auto_increment,
+  id_cagnotte int,
+  prenom text,
+  nom text,
+  montant float,
+  primary key (id),
+  foreign key (id_cagnotte) references Cagnotte(id));
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

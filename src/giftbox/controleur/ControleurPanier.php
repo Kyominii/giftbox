@@ -271,24 +271,35 @@ class ControleurPanier
 
         if ($sauvegarde != "true") {
 
-            $_SESSION['purchaseInProgress'] = $coffret->id;
-            $vue = new VuePanier(null);
-
             if ($paiement == "Classique") {
+
+                $_SESSION['purchaseInProgress'] = $coffret->id;
+                $vue = new VuePanier(null);
                 $html = $vue->render("PAY_CLASSIC");
             } else {
-                $html = $vue->render("PAY_POOL");
+
+                $coffret->slug = "";
+                $cagnotte = new models\Cagnotte();
+                $cagnotte->id_coffret = $coffret->id;
+                $cagnotte->slug = sha1(uniqid("cag", true));
+                $cagnotte->motdepasse = password_hash($password, PASSWORD_BCRYPT);
+                $cagnotte->save();
+                $vue = new VuePanier($cagnotte);
+                $_SESSION['message']['type'] = "positive";
+                $_SESSION['message']['content'] = "Vous pouvez transmettre <a href='/cagnotte/" . $cagnotte->slug . "'>cette URL a vos amis</a> pour participer à la cagnotte.";
+                $_SESSION['message']['header'] = "Succès !";
+                return $vue->render("ASK_PASS_BASKET");
             }
         } else {
 
             if($password != ""){
-                $coffret->motdepasse = crypt($password, "IlOvEsEcUrItY<3");
+                $coffret->motdepasse = password_hash($password, PASSWORD_BCRYPT);
                 $coffret->save();
             }
 
             if(!isset($_SESSION['basketLoaded'])) {
 
-                $coffret->slug = uniqid("ges", true);
+                $coffret->slug = sha1(uniqid("ges", true));
                 $coffret->save();
                 $_SESSION['basketLoaded'] = $coffret->id;
             }
@@ -332,7 +343,7 @@ class ControleurPanier
 
         $coffret = models\Coffret::where('slug', '=', $slug)->first();
 
-        if(!is_null($coffret) && (crypt($password, "IlOvEsEcUrItY<3") == $coffret->motdepasse || is_null($coffret->motdepasse))){
+        if(!is_null($coffret) && (password_verify($password, $coffret->motdepasse) || is_null($coffret->motdepasse))){
 
             if(!empty($coffret)){
 
@@ -357,7 +368,7 @@ class ControleurPanier
         } else {
 
             $_SESSION['message']['type'] = "negative";
-            $_SESSION['message']['content'] = "Veuillez vérifier votre ID coffret ainsi que votre mot de passe associé.";
+            $_SESSION['message']['content'] = "Veuillez vérifier votre ID coffret ainsi que votre mot de passe associé. <br /><i class='warning sign icon'></i>Un coffret payé n'est plus disponible à la gestion   <i class='warning sign icon'></i>";
             $_SESSION['message']['header'] = "Erreur !";
 
             $vue = new VuePanier(null);

@@ -3,14 +3,15 @@ session_start();
 require_once ("vendor/autoload.php");
 use giftbox\controleur as controleur;
 
+if(!isset($_SESSION["connecte"])){
+    $_SESSION["connecte"] = -1;
+}
+
 //Création de l'objet du micro-framework
 $app = new \Slim\Slim;
 
 //Cas où nous sommes à la racine du site
 $app->get('/', function(){
-    if(!isset($_SESSION["connecte"])){
-        $_SESSION["connecte"] = -1;
-    }
     $controlCatalogue = new controleur\ControleurCatalogue();
     $listePrest = $controlCatalogue->getBestPrestation();
     $vueAccueil = new \giftbox\vue\VueAccueil($_SESSION["connecte"]);
@@ -295,6 +296,86 @@ $app->post('/gestion/suspenssion', function(){
             $vueGestion = new \giftbox\vue\VueGestion("echec");
             echo $vueGestion->render();
         }
+    }
+});
+
+$app->get('/panier/delier', function() use ($app){
+    unset($_SESSION['basketLoaded']);
+    $_SESSION['message']['type'] = "positive";
+    $_SESSION['message']['content'] = "Votre coffret a été déchargé de votre session avec succès !";
+    $_SESSION['message']['header'] = "Succès !";
+    $app->redirect('/panier');
+});
+
+$app->get('/cagnotte/:slug', function($slug) use ($app){
+    $controller = new controleur\ControleurCagnotte();
+    $result = $controller->showPool($slug);
+
+    if($result != false){
+        echo $result;
+    } else {
+        $app->redirect('/catalogue');
+    }
+});
+
+$app->post('/cagnotte/:slug/add', function($slug) use ($app){
+    if(isset($_POST['nom']) && isset($_POST['prenom']) && isset($_POST['montant'])){
+        if($_POST['nom'] != "" && $_POST['prenom'] != "" && $_POST['montant'] != "" && floatval($_POST['montant']) > 0) {
+            $controller = new controleur\ControleurCagnotte();
+            $result = $controller->addPool($slug, $_POST['nom'], $_POST['prenom'], floatval($_POST['montant']));
+
+            if ($result != false) {
+                $app->redirect('/cagnotte/' . $slug);
+            } else {
+                $app->redirect('/cagnotte/' . $slug);
+            }
+        } else {
+            $_SESSION['message']['type'] = "negative";
+            $_SESSION['message']['content'] = "Les informations ne sont pas valides !";
+            $_SESSION['message']['header'] = "Erreur !";
+            $app->redirect('/cagnotte/' . $slug);
+        }
+    } else {
+        $_SESSION['message']['type'] = "negative";
+        $_SESSION['message']['content'] = "Les informations ne sont pas valides !";
+        $_SESSION['message']['header'] = "Erreur !";
+        $app->redirect('/cagnotte/' . $slug);
+    }
+
+});
+
+$app->post('/cagnotte/:slug/connect', function($slug) use ($app){
+    if(isset($_POST['pass'])) {
+        $controller = new controleur\ControleurCagnotte();
+        $result = $controller->connectPool($slug, $_POST['pass']);
+
+        if($result){
+            $_SESSION['message']['type'] = "positive";
+            $_SESSION['message']['content'] = "Vous êtes identifiés !";
+            $_SESSION['message']['header'] = "Succès !";
+            $app->redirect('/cagnotte/' . $slug);
+        } else {
+            $_SESSION['message']['type'] = "negative";
+            $_SESSION['message']['content'] = "Le mot de passe n'est pas correspondant !";
+            $_SESSION['message']['header'] = "Erreur !";
+            $app->redirect('/cagnotte/' . $slug);
+        }
+    }
+});
+
+$app->get('/cagnotte/:slug/confirm', function($slug) use ($app){
+
+    $controller = new controleur\ControleurCagnotte();
+    $result = $controller->validPool($slug);
+
+    if($result != false){
+        echo $result;
+    } else {
+
+        $_SESSION['message']['type'] = "negative";
+        $_SESSION['message']['content'] = "Veuillez vérifier que vous soyez connecté sur la cagnotte et que le total recolté soit supérieur à l'objectif de la cagnotte !";
+        $_SESSION['message']['header'] = "Erreur !";
+        $app->redirect('/cagnotte/' . $slug);
     }
 });
 

@@ -16,4 +16,8 @@ class Coffret extends \Illuminate\Database\Eloquent\Model
     public function client(){
         return $this->belongsTo('\giftbox\models\Client', 'id_cli');
     }
+
+    public function cagnotte(){
+        return $this->hasMany('\giftbox\models\Cagnotte', 'id_coffret');
+    }
 }

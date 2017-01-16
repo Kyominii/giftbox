@@ -17,12 +17,12 @@ class VuePanier
         $html = "";
 
         if($this->pbc[2] != -1){
-            $html = "<div class=\"ui message\">
+            $html = "<a href='/panier/delier'><div class=\"ui message\">
                           <div class=\"header\">
                             Panier chargé
                           </div>
                           <p>Le panier #" . $this->pbc[2] . " est actuellement chargé, cliquez sur ce cadre pour retirer le lien de chargement (vous garderez les prestations dans votre panier mais vos informations vous seront redemandé lors de la poursuite).</p>
-                     </div>";
+                     </div></a>";
         }
 
         $html = $html . "<div class=\"ui middle aligned divided list\">";
@@ -537,7 +537,7 @@ class VuePanier
                       <div class=\"step\">
                         <div class=\"content\">
                           <div class=\"title\">Finalisation</div>
-                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                          <div class=\"description\">Récupérer votre URL cadeau</div>
                         </div>
                       </div>
                  </div>
@@ -597,7 +597,7 @@ class VuePanier
                 <input id=\"input_mdp_coffret\" type=\"hidden\" name=\"mdp_coffret\" value=\"\" />
               </form>
               
-              <div class=\"ui modal\">
+              <div id='saveModal' class=\"ui modal\">
                   <i class=\"close icon\"></i>
                   <div class=\"header\">
                     Choisir un mot de passe
@@ -631,9 +631,42 @@ class VuePanier
               
               <div class=\"ui buttons\">
                   <button id=\"saveBasket\" class=\"ui button\">Sauvegarder le panier</button>
-                  <div class=\"or\" data-text=\"ou\"></div>
-                  <button id=\"confirmButton\" class=\"ui positive button\">Payer maintenant</button>
+                  <div class=\"or\" data-text=\"ou\"></div>";
+
+        if($this->pbc['paiement'] == "Cagnotte"){
+            $html = $html . "
+            
+            <div id='modalCagnotte' class=\"ui modal\">
+                  <i class=\"close icon\"></i>
+                  <div class=\"header\">
+                    Choisir un mot de passe pour la cagnotte
+                  </div>
+                  <div class=\"content\">
+                    <div class=\"description\">
+                      <div class=\"ui header\">Vous devez choisir un mot de passe pour pouvoir finaliser la cagnotte.</div>
+                      <form id=\"input_password_cagnotte\" class=\"ui form\">
+                        <div class=\"field\">
+                            <label>Mot de passe :</label>
+                            <input type=\"password\" name=\"passwordOne\" placeholder=\"Laisser vide si vous ne voulez pas modifier le mot de passe (aucun si vous n'avez jamais créer de mot de passe pour ce coffret)\" /><br />
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class=\"actions\">
+                    <div class=\"ui black deny button\">
+                      Annuler
+                    </div>
+                    <div id=\"sendCagnotte\" class=\"ui positive right labeled icon button\">
+                      Confirmer
+                      <i class=\"checkmark icon\"></i>
+                    </div>
+                  </div>
               </div>
+            <button id=\"cagnotteButton\" class=\"ui positive button\">Générer la cagnotte</button>";
+        } else {
+            $html = $html . "<button id=\"confirmButton\" class=\"ui positive button\">Payer maintenant</button>";
+        }
+        $html = $html . "</div>
                           
               <script>
               
@@ -684,8 +717,23 @@ class VuePanier
                       $(\"#saveBasket\").click(function ()
                       {
                         $('#input_sauvegarder_coffret').val('true');
-                        $('.ui.modal').modal('show');
+                        $('#saveModal').modal('show');
                       });
+                      
+                      $(\"#cagnotteButton\").click(function ()
+                      {
+                      
+                        $('#input_sauvegarder_coffret').val('false');
+                        $('#modalCagnotte').modal('show');
+                      });
+                      
+                      $(\"#sendCagnotte\").click(function ()
+                      {
+                      
+                        $('#input_mdp_coffret').val($('#input_password_cagnotte').form('get value', 'passwordOne'));
+                        $('#infosFormulaire').form('submit');
+                      });
+                      
                       
                    });
               </script>";
@@ -710,7 +758,7 @@ class VuePanier
                       <div class=\"step\">
                         <div class=\"content\">
                           <div class=\"title\">Finalisation</div>
-                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                          <div class=\"description\">Récupérer votre URL cadeau</div>
                         </div>
                       </div>
                  </div>
@@ -841,32 +889,6 @@ class VuePanier
         return $html;
     }
 
-    public function htmlPayPool(){
-        $html = "<div class=\"ui ordered steps\">
-                      <div class=\"completed step\">
-                        <div class=\"content\">
-                          <div class=\"title\">Résumé</div>
-                          <div class=\"description\">Résumé de vos achats</div>
-                        </div>
-                      </div>
-                      <div class=\"active step\">
-                        <div class=\"content\">
-                          <div class=\"title\">Paiement</div>
-                          <div class=\"description\">Paiement de vos achats</div>
-                        </div>
-                      </div>
-                      <div class=\"step\">
-                        <div class=\"content\">
-                          <div class=\"title\">Finalisation</div>
-                          <div class=\"description\">Récupérer les URLs de gestion</div>
-                        </div>
-                      </div>
-                 </div>
-                 <h1>WIP</h1>";
-
-        return $html;
-    }
-
     public function htmlFinish(){
         $html = "<div class=\"ui ordered steps\">
                       <div class=\"completed step\">
@@ -884,7 +906,7 @@ class VuePanier
                       <div class=\"completed step\">
                         <div class=\"content\">
                           <div class=\"title\">Finalisation</div>
-                          <div class=\"description\">Récupérer les URLs de gestion</div>
+                          <div class=\"description\">Récupérer l'URL cadeau</div>
                         </div>
                       </div>
                  </div>
@@ -941,10 +963,6 @@ class VuePanier
             case "PAY_CLASSIC":
                 $html = Header::getHeader("Paiement | Giftbox");
                 $html = $html . $this->htmlPayClassic();
-                break;
-            case "PAY_POOL":
-                $html = Header::getHeader("Paiement | Giftbox");
-                $html = $html . $this->htmlPayPool();
                 break;
             case "FINISH":
                 $html = Header::getHeader("Finalisation | Giftbox");
