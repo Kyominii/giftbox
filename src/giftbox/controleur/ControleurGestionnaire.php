@@ -54,6 +54,32 @@ class ControleurGestionnaire {
         models\Prestation::where('id','=',$id)
             ->delete();
 
+        $best = models\BestPrestation::where('id_prest','=',$id)
+            ->first();
+
+        if($best != NULL){
+            models\BestPrestation::where('id_prest','=',$id)
+                ->delete();
+            $cat = models\Categorie::where('id','=',$best->id_cat)
+                ->first();
+            $note = -1;
+            $id = -1;
+            $listePrest = models\Prestation::where('cat_id','=',$cat->id)
+                ->where('display','like',1)
+                ->get();
+            foreach ($listePrest as $index => $p){
+                if($p->moyenne() > $note){
+                    $note = $p->moyenne();
+                    $id = $index;
+                }
+            }
+
+            $new = new models\BestPrestation();
+            $new->id_cat = $best->id_cat;
+            $new->id_prest = $listePrest[$id]->id;
+            $new->save();
+        }
+
         return true;
 
     }
@@ -66,9 +92,61 @@ class ControleurGestionnaire {
             if($prestation->display == 1){
                 $prestation->display = 0;
                 $prestation->save();
+
+                $best = models\BestPrestation::where('id_prest','=',$id)
+                    ->first();
+
+                if($best != NULL){
+                    models\BestPrestation::where('id_prest','=',$id)
+                        ->delete();
+                    $cat = models\Categorie::where('id','=',$best->id_cat)
+                        ->first();
+                    $note = -1;
+                    $id = -1;
+                    $listePrest = models\Prestation::where('cat_id','=',$cat->id)
+                        ->where('display','like',1)
+                        ->get();
+                    foreach ($listePrest as $index => $p){
+                        if($p->moyenne() > $note){
+                            $note = $p->moyenne();
+                            $id = $index;
+                        }
+                    }
+
+                    $new = new models\BestPrestation();
+                    $new->id_cat = $best->id_cat;
+                    $new->id_prest = $listePrest[$id]->id;
+                    $new->save();
+                }
+
             }else {
                 $prestation->display = 1;
                 $prestation->save();
+
+                $prest = models\Prestation::where('id','=',$id)
+                    ->first();
+
+                $best = models\BestPrestation::where('id_cat','=',$prest->cat_id)
+                    ->first();
+
+
+                if($best != NULL){
+                    $bestPrest = models\Prestation::where('id','=',$best->id_prest)
+                        ->first();
+                    if($prest->moyenne() > $bestPrest->moyenne()){
+                        models\BestPrestation::where('id_cat','=',$prest->cat_id)
+                            ->delete();
+                        $new = new models\BestPrestation();
+                        $new->id_cat = $prest->cat_id;
+                        $new->id_prest = $prest->id;
+                        $new->save();
+                    }
+                }else{
+                    $new = new models\BestPrestation();
+                    $new->id_cat = $prest->cat_id;
+                    $new->id_prest = $prest->id;
+                    $new->save();
+                }
             }
             return true;
         }else{

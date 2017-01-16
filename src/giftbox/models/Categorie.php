@@ -12,4 +12,9 @@ class Categorie extends \Illuminate\Database\Eloquent\Model
     public function prestations(){
         return $this->hasMany('\giftbox\models\Prestation', "cat_id");
     }
+
+    //Déclaration de relation avec le modèle BrestPrestation
+    public function bestPrestations(){
+        return $this->hasMany('\giftbox\models\BestPrestation', "id_cat");
+    }
 }

@@ -332,7 +332,7 @@ class ControleurPanier
             $html = $vue->render("FAIL_LOADED_BASKET");
             return $html;
         }
-        
+
 
     }
 }

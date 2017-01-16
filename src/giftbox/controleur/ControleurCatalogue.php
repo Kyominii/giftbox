@@ -102,24 +102,12 @@ class ControleurCatalogue {
     }
 
     function getBestPrestation(){
-        $listeCategorie = models\Categorie::get();
+        $listeBest = models\BestPrestation::get();
         $listeBestPrest = array();
-        foreach ($listeCategorie as $cat){
-            $note = -1;
-            $id = -1;
-            $idCat = $cat->id;
-            $listePrest = models\Prestation::where('cat_id','=',$idCat)
-                ->where('display','like',1)
-                ->get();;
-            foreach ($listePrest as $index => $prest){
-                if($prest->moyenne() > $note){
-                    $note = $prest->moyenne();
-                    $id = $index;
-                }
-            }
-            if($id != -1){
-                $listeBestPrest[] = $listePrest[$id];
-            }
+        foreach ($listeBest as $prest){
+            $add = models\Prestation::where('id','=',$prest->id_prest)
+            ->first();
+            $listeBestPrest[] = $add;
         }
         return $listeBestPrest;
     }
@@ -154,6 +142,31 @@ class ControleurCatalogue {
                 $notation->note = $note;
                 $notation->pre_id = $id_pre;
                 $notation->save();
+
+                $prest = models\Prestation::where('id','=',$notation->pre_id)
+                                            ->first();
+
+                $best = models\BestPrestation::where('id_cat','=',$prest->cat_id)
+                    ->first();
+
+
+                if($best != NULL){
+                    $bestPrest = models\Prestation::where('id','=',$best->id_prest)
+                        ->first();
+                    if($prest->moyenne() > $bestPrest->moyenne()){
+                        models\BestPrestation::where('id_cat','=',$prest->cat_id)
+                            ->delete();
+                        $new = new models\BestPrestation();
+                        $new->id_cat = $prest->cat_id;
+                        $new->id_prest = $prest->id;
+                        $new->save();
+                    }
+                }else{
+                    $new = new models\BestPrestation();
+                    $new->id_cat = $prest->cat_id;
+                    $new->id_prest = $prest->id;
+                    $new->save();
+                }
 
                 if (!isset($_SESSION['alreadyNoted'])) {
 

@@ -23,6 +23,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `bestprest`
+--
+
+CREATE TABLE `bestprest` (
+  `id_cat` int(11) NOT NULL,
+  `id_prest` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `bestprest`
+--
+
+INSERT INTO `bestprest` (`id_cat`, `id_prest`) VALUES
+(1, 1),
+(4, 23),
+(2, 3),
+(3, 4);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `categorie`
 --
 
@@ -58,16 +79,11 @@ CREATE TABLE `notation` (
 --
 
 INSERT INTO `notation` (`id`, `note`, `pre_id`) VALUES
-(1, 3, 1),
-(2, 4, 1),
-(3, 5, 1),
-(4, 2, 2),
-(40, 3, 3),
-(41, 4, 4),
-(42, 4, 4),
-(43, 3, 1),
-(44, 3, 5),
-(45, 4, 2);
+(46, 4, 1),
+(47, 3, 3),
+(48, 4, 4),
+(49, 5, 23);
+
 
 -- --------------------------------------------------------
 
