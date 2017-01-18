@@ -114,15 +114,15 @@ class ControleurCagnotte
 
             foreach ($cagnotte->coffret->prestations as $prestation){
 
-                $prestation = models\Prestation::where('id', '=', $prestation['id_prestation'])->first();
+                $presta = models\Prestation::where('id', '=', $prestation['id_prestation'])->first();
                 $nb = $prestation['nb_prestation'];
 
-                $prixTotal = $prixTotal + ($prestation->prix * $nb);
+                $prixTotal += $presta->prix * $nb;
             }
 
             foreach ($cagnotte->contributions as $contribution){
 
-                $prixContribution = $prixContribution + $contribution->montant;
+                $prixContribution += $contribution->montant;
             }
 
             if($prixContribution < $prixTotal){
