@@ -327,9 +327,10 @@ class ControleurPanier
         $coffret = models\Coffret::where('id', '=', $idCoffret)->first();
         $coffret->date_paiement = date('Y-m-d');
         $coffret->slug = "";
+        $coffret->urlCadeau = sha1(uniqid("cad", true));
         $coffret->save();
 
-        $vue = new VuePanier(null);
+        $vue = new VuePanier($coffret);
         return $vue->render("FINISH");
     }
 

@@ -911,7 +911,8 @@ class VuePanier
                       </div>
                  </div>
                  <h1>Félicitation</h1>
-                 <p>Vous avez terminé l'achat de votre coffret !</a>";
+                 <p>Vous avez terminé l'achat de votre coffret !</p>
+                 <p>Vous pouvez envoyez ce lien cadeau à votre destinataire : <a href='/cadeau/" . $this->pbc->urlCadeau . "'>Ce lien</a></p>";
 
         return $html;
     }
