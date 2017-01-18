@@ -65,8 +65,16 @@ class ControleurCatalogue {
         $prestation = models\Prestation::where('id','=',$id)
                             ->first();
 
-        $vue = new vue\VueCatalogue($prestation, "PRESTATION_BY_ID");
-        return $vue->render();
+        if($prestation != null){
+            $vue = new vue\VueCatalogue($prestation, "PRESTATION_BY_ID");
+            return $vue->render();
+        } else {
+            $_SESSION['message']['type'] = "negative";
+            $_SESSION['message']['content'] = "Aucun article n'a été trouvé.";
+            $_SESSION['message']['header'] = "Erreur !";
+            return false;
+        }
+
     }
 
     function affPrestCat($catid){

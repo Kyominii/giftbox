@@ -55,7 +55,7 @@ class VueCatalogue
 
         foreach ($this->pbc[0] as $prestation){
 
-            $html = $html . "<div class=\"card\">
+            $html = $html . "<div class=\"ui centered card\">
                                 <div class=\"image\">
                                     <a class=\"image\" href=\"/catalogue/$prestation->id\"><img class=\"ui medium image\" src=\"/assets/img/$prestation->img\" /></a>
                                 </div>

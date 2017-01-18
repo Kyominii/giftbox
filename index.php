@@ -42,13 +42,19 @@ $app->get('/catalogue', function(){
 });
 
 //Cas où on veut afficher seulement une prestation
-$app->get('/catalogue/:id', function($id){
+$app->get('/catalogue/:id', function($id) use ($app){
     $controlCatalogue = new controleur\ControleurCatalogue();
-    echo $controlCatalogue->getPrestationById($id);
+    $result = $controlCatalogue->getPrestationById($id);
+
+    if($result != false){
+        echo $result;
+    } else {
+        $app->redirect('/catalogue');
+    }
 });
 
 //Cas où on veut afficher une liste de prestation en fonction d'une categorie
-$app->get('/catalogue/cat/:id', function($id){
+$app->get('/catalogue/cat/:id', function($id) use ($app){
 
     //Le mode de tri : 0 => par défaut; 1 => croissant; 2 => décroissant
     $sortMode = 0;
@@ -379,15 +385,36 @@ $app->get('/cagnotte/:slug/confirm', function($slug) use ($app){
     }
 });
 
+$app->get('/cadeau/:url', function($url) use ($app){
+   $controler = new controleur\ControleurCadeau();
+   $result = $controler->showGift($url);
+
+   if($result != false){
+       echo $result;
+   } else {
+       $app->redirect('/catalogue');
+   }
+});
+
+$app->post('/cadeau/:url/retirer', function($url) use ($app) {
+
+    if(isset($_POST['email']) && $_POST['email'] != ""){
+        $controler = new controleur\ControleurCadeau();
+        $controler->deleteGift($url, $_POST['email']);
+        $app->redirect('/catalogue');
+    } else {
+        $_SESSION['message']['type'] = "negative";
+        $_SESSION['message']['content'] = "Vous devez renseignez un email !";
+        $_SESSION['message']['header'] = "Erreur !";
+        $app->redirect('/cadeau/' . $url);
+    }
+
+});
+
 $app->get('/hash/:mdp', function($mdp){
     $hash=password_hash($mdp, PASSWORD_BCRYPT);
     echo password_verify(123,$hash)."<br>";;
     echo $hash;
-});
-
-$app->get('/reset', function(){
-   unset($_SESSION['basket']);
-   unset($_SESSION['basketLoaded']);
 });
 
 //Lancement du micro-framework
